@@ -1,0 +1,24 @@
+# Define variables
+@Host = localhost
+@Port = 8080
+
+
+
+### Upload File To Server
+POST http://{{Host}}:{{Port}}/api/upload
+Content-Type: multipart/form-data
+
+Content-Disposition: form-data; name="file"; filename="testingUpload.pdf"
+Content-Type: application/pdf
+
+# The file content is read from the local file system at the specified path.
+< ./build/testingUpload.pdf
+
+
+
+
+### Download File From Server
+GET http://{{Host}}:{{Port}}/api/download
+
+# Save the downloaded content to a local file.
+> ./downloaded_file

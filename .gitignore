@@ -1,0 +1,37 @@
+.vscode
+
+# Ignore object files
+*.o
+*.obj
+
+# Ignore binary files
+*.exe
+*.out
+*.app
+
+# Ignore libraries
+*.lib
+*.a
+*.la
+*.lo
+*.def
+
+# Ignore shared libraries
+*.dll
+*.so
+*.dylib
+
+# Ignore compiled Java files
+*.class
+
+# Ignore backup and temporary files
+*~
+*.swp
+.DS_Store
+
+# Ignore build directories
+/build/
+bin/
+debug/
+release/
+
