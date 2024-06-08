@@ -1,6 +1,6 @@
 from locust import HttpUser, TaskSet, task, between
 
-class MyTaskSet(TaskSet):
+class FileTaskTest(TaskSet):
 
     @task(1)
     def upload_file(self):
@@ -11,12 +11,17 @@ class MyTaskSet(TaskSet):
     def download_file(self):
         self.client.get("/api/download")
 
+class SimpleTaskSet(TaskSet):
+    @task(1)
+    def test_async(self):
+        self.client.get("/testasync")
+
 class WebsiteUser(HttpUser):
-    tasks = [MyTaskSet]
+    tasks = [SimpleTaskSet]
     wait_time = between(1, 2)
 
 
 
-# RUN LOCUSR AS : locust -f locustfile.py --host=http://localhost:7000
+# RUN LOCUSR AS : locust -f locustfile.py --host=http://localhost:7000 --web-port 7010
 
-# now got to brwoser to load test (http://localhost:8089)
+# now got to brwoser to load test (http://localhost:7010)

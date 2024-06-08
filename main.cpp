@@ -3,20 +3,10 @@
 #include <cstdlib>
 #include <thread>
 #include "./includes/utils/HttpServer.hpp"
-// #include <dotenv/dotenv.h>
 
-int main(int argc, char **argv)
+int main()
 {
-    // dotenv::init();
-    std::cout << "Number of arguments: " << argc << std::endl;
-
-    // Print each argument
-    for (int i = 0; i < argc; ++i)
-    {
-        std::cout << "Argument " << i << ": " << argv[i] << std::endl;
-    }
-
-    unsigned short port = 7000; // std::getenv("HTTP_PORT") ? std::stoi(std::getenv("HTTP_PORT")) : 7000;
+    unsigned short port = 7000;
 
     try
     {
@@ -27,10 +17,8 @@ int main(int argc, char **argv)
 
         httpServer.Start(port, thread_pool_size);
 
-        // Keep the server alive for 5 minutes
-        std::this_thread::sleep_for(std::chrono::seconds(60 * 5));
-
-        httpServer.Stop();
+        // Run the server in the main thread
+        httpServer.Run();
     }
     catch (boost::system::system_error &e)
     {

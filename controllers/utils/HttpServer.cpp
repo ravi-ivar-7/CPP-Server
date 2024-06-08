@@ -87,3 +87,8 @@ void HttpServer::Stop()
         std::cout << "EXCEPTION: " << e.what() << std::endl;
     }
 }
+
+void HttpServer::Run()
+{
+    m_IOContext.run();
+}

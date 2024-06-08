@@ -66,7 +66,7 @@ void handleFileUpload(tcp::socket&& socket, http::request<http::string_body>&& r
 
     // Send the response
     http::response<http::string_body> res{http::status::ok, req.version()};
-    res.set(http::field::server, "Beast");
+    res.set(http::field::server, "c++");
     res.set(http::field::content_type, "text/plain");
     res.body() = "File uploaded successfully as " + filename;
     res.prepare_payload();
@@ -126,7 +126,7 @@ std::string getFileMimeType(const std::string &path)
 
 void handleFileDownload(tcp::socket &&socket, http::request<http::string_body> &&req)
 {
-    std::string filePath = "./controllers/common.cpp"; // becarefull of this path
+    std::string filePath = "./config/.env"; // becarefull of this path
 
     // std::cout << "Current working directory: " << fs::current_path() << std::endl;// this will give root dir not this file dir
 

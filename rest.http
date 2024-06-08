@@ -22,3 +22,12 @@ GET http://{{Host}}:{{Port}}/api/download
 
 # Save the downloaded content to a local file.
 > ./downloaded_file
+
+
+
+###
+GET http://{{Host}}:{{Port}}/api/sysServerInfo?sysinfo  
+
+
+###
+GET http://{{Host}}:{{Port}}/testasync
