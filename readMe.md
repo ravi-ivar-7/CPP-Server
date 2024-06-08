@@ -1,14 +1,36 @@
 ```
 project/
 ├── CMakeLists.txt
-├── server.cpp
-├── routes/
-│   ├── routes.cpp
-│   └── routes.hpp
+├── makefile
+├── main.cpp
+├── rest.http
+|
+├── config/
+│   ├── .env
+│   └── key.pem
+|
+├── routers/
+│   ├── router.cpp
+│   └── router.hpp
+|
 ├── controllers/
-│   ├── controller.cpp
-│   └── controller.hpp
-└── uploads/
+|   ├── utils
+|   |       ├── HttpServic.cpp
+|   |       ├── HttpAcceptor.cpp
+│   |       └── HttpServer.cpp
+│   |
+│   ├── handleFiles.cpp
+│   └── common.cpp
+|
+├── includes/
+|   ├── utils
+|   |       ├── HttpServic.hpp
+|   |       ├── HttpAcceptor.hpp
+│   |       └── HttpServer.hpp
+│   |
+│   ├── handleFiles.hpp
+│   └── common.hpp
+
 ```
 ## To compile, build, and run the server in WSL:
 ### Using `makefile` 
@@ -30,5 +52,5 @@ mkdir build
 cd build
 cmake ..
 make
-./FileServer
+./server
 ```

@@ -1,13 +1,15 @@
 # Specify the compiler and compilation flags
 CC = g++
-CFLAGS = -std=c++17
+CFLAGS := -std=c++17 -Wall -Wextra
 
 # Specify the target executable name
 TARGET = server
 
-# Specify the source files
-SRCS = server.cpp routes/routes.cpp controllers/handleFiles.cpp controllers/common.cpp
+# Source files
+SRCS := $(wildcard *.cpp) $(wildcard routers/*.cpp) $(wildcard controllers/*.cpp) $(wildcard controllers/utils/*.cpp)
 
+
+LIBS := -ldotenv
 # Specify the object files
 OBJS = $(SRCS:.cpp=.o)
 
@@ -18,8 +20,8 @@ BOOST_LIB_DIRS = /usr/lib
 # Specify the Boost libraries to link against
 BOOST_LIBS = -lboost_system -lboost_filesystem
 
-# Specify the directories for header files
-INC_DIRS = -I$(BOOST_INCLUDE_DIRS) -I./routes -I./controllers
+# Include directories
+INC_DIRS := -I./includes -I./routers -I./controllers -I./controllers/utils
 
 # Specify the directory for libraries
 LIB_DIRS = -L$(BOOST_LIB_DIRS)

@@ -1,6 +1,6 @@
 # Define variables
 @Host = localhost
-@Port = 8080
+@Port = 7000
 
 
 
@@ -8,11 +8,11 @@
 POST http://{{Host}}:{{Port}}/api/upload
 Content-Type: multipart/form-data
 
-Content-Disposition: form-data; name="file"; filename="testingUpload.pdf"
+Content-Disposition: form-data; name="file"; filename="index.htm"
 Content-Type: application/pdf
 
 # The file content is read from the local file system at the specified path.
-< ./build/testingUpload.pdf
+< ./boost_1_85_0/index.htm
 
 
 

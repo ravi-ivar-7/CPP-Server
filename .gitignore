@@ -1,4 +1,7 @@
 .vscode
+.env
+/boost_1_85_0
+/__pycache__
 
 # Ignore object files
 *.o

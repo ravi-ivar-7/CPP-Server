@@ -1,4 +1,4 @@
-#include "handleFiles.hpp"
+#include "../includes/handleFiles.hpp"
 #include <boost/beast.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/asio/ip/tcp.hpp>
@@ -29,7 +29,8 @@ std::string getFilenameFromHeader(const std::string &header)
     return "uploaded_file"; // Default filename if not found
 }
 
-void handleFileUpload(tcp::socket socket, http::request<http::string_body> req)
+// ISSUE WITH FILE NAME AND EXTENSION
+void handleFileUpload(tcp::socket&& socket, http::request<http::string_body>&& req)
 {
     // Extract the boundary from the Content-Type header
     std::string contentType(req[http::field::content_type].begin(), req[http::field::content_type].end());
@@ -123,12 +124,11 @@ std::string getFileMimeType(const std::string &path)
     return "application/octet-stream";
 }
 
-void handleFileDownload(tcp::socket socket, http::request<http::string_body> req)
+void handleFileDownload(tcp::socket &&socket, http::request<http::string_body> &&req)
 {
     std::string filePath = "./controllers/common.cpp"; // becarefull of this path
-    std::cout << "File path: " << filePath << std::endl;
 
-    std::cout << "Current working directory: " << fs::current_path() << std::endl;// this will give root dir not this file dir
+    // std::cout << "Current working directory: " << fs::current_path() << std::endl;// this will give root dir not this file dir
 
     if (fs::exists(filePath))
     {
@@ -138,7 +138,6 @@ void handleFileDownload(tcp::socket socket, http::request<http::string_body> req
         if (!ifs.is_open())
         {
             // File could not be opened
-            std::cout << "Failed to open file: " << filePath << std::endl;
             http::response<http::string_body> res{http::status::internal_server_error, req.version()};
             res.set(http::field::server, "Beast");
             res.set(http::field::content_type, "text/plain");
@@ -170,7 +169,6 @@ void handleFileDownload(tcp::socket socket, http::request<http::string_body> req
     else
     {
         // Respond with a 404 Not Found if file does not exist
-        std::cout << "File not found: " << filePath << std::endl;
         http::response<http::string_body> res{http::status::not_found, req.version()};
         res.set(http::field::server, "Beast");
         res.set(http::field::content_type, "text/plain");

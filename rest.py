@@ -5,7 +5,7 @@ downloadFile = True
 
 # Upload file
 if(uploadFile): # successfully upload to server
-    upload_url = "http://localhost:8080/api/upload"
+    upload_url = "http://localhost:7000/api/upload"
     files = {'file': open('./build/testingUpload.pdf', 'rb')}
     response = requests.post(upload_url, files=files)
     print("Upload response:", response.text)
@@ -13,7 +13,7 @@ if(uploadFile): # successfully upload to server
 # Download file
 downloadFile = True
 if downloadFile:
-    download_url = "http://localhost:8080/api/download"
+    download_url = "http://localhost:7000/api/download"
     response = requests.get(download_url)
     if response.status_code == 200:
         # Try to get the filename from the Content-Disposition header

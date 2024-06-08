@@ -7,6 +7,6 @@
 namespace http = boost::beast::http;
 using tcp = boost::asio::ip::tcp;
 
-void handleNotFound(tcp::socket socket, http::request<http::string_body> req);
+void handleNotFound(tcp::socket &&socket, http::request<http::string_body> &&req);
 
 #endif // COMMON_HPP
