@@ -1,0 +1,38 @@
+# Define variables
+@Host = localhost
+@Port = 7000
+
+
+
+### Upload File To Server
+POST http://{{Host}}:{{Port}}/admin/upload
+Content-Type: multipart/form-data
+
+Content-Disposition: form-data; name="file"; filename="index.htm"
+Content-Type: application/pdf
+
+# The file content is read from the local file system at the specified path.
+< ./boost_1_85_0/index.htm
+
+
+
+
+### Download File From Server
+GET http://{{Host}}:{{Port}}/admin/download
+
+# Save the downloaded content to a local file.
+> ./downloaded_file
+
+
+
+###
+GET http://{{Host}}:{{Port}}/sys-server-info?sysInfo=sss
+
+
+###
+GET http://{{Host}}:{{Port}}/admin/testasync
+
+
+
+###
+GET http://{{Host}}:{{Port}}/admin/home

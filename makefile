@@ -6,7 +6,16 @@ CFLAGS := -std=c++17 -Wall -Wextra
 TARGET = server
 
 # Source files
-SRCS := $(wildcard *.cpp) $(wildcard routers/*.cpp) $(wildcard controllers/*.cpp) $(wildcard controllers/utils/*.cpp)
+SRCS := $(wildcard src/*.cpp) \
+        $(wildcard src/auth/*.cpp) \
+        $(wildcard src/client/*.cpp) \
+        $(wildcard src/files/*.cpp) \
+        $(wildcard src/requests/*.cpp) \
+        $(wildcard src/security/*.cpp) \
+        $(wildcard src/servers/*.cpp) \
+        $(wildcard src/streaming/*.cpp) \
+        $(wildcard src/system/*.cpp) \
+        $(wildcard src/utils/*.cpp)
 
 
 LIBS := -ldotenv
@@ -21,7 +30,7 @@ BOOST_LIB_DIRS = /usr/lib
 BOOST_LIBS = -lboost_system -lboost_filesystem
 
 # Include directories
-INC_DIRS := -I./includes -I./routers -I./controllers -I./controllers/utils
+INC_DIRS := -I./src -I./src/auth -I./src/client -I./src/files -I./src/requests -I./src/security -I./src/servers -I./src/streaming -I./src/system -I./src/utils 
 
 # Specify the directory for libraries
 LIB_DIRS = -L$(BOOST_LIB_DIRS)
