@@ -5,7 +5,7 @@
 
 
 ### Upload File To Server
-POST http://{{Host}}:{{Port}}/api/upload
+POST http://{{Host}}:{{Port}}/admin/upload
 Content-Type: multipart/form-data
 
 Content-Disposition: form-data; name="file"; filename="index.htm"
@@ -18,7 +18,7 @@ Content-Type: application/pdf
 
 
 ### Download File From Server
-GET http://{{Host}}:{{Port}}/api/download
+GET http://{{Host}}:{{Port}}/admin/download
 
 # Save the downloaded content to a local file.
 > ./downloaded_file
@@ -26,8 +26,13 @@ GET http://{{Host}}:{{Port}}/api/download
 
 
 ###
-GET http://{{Host}}:{{Port}}/api/sysServerInfo?sysinfo  
+GET http://{{Host}}:{{Port}}/admin/sysServerInfo?sysinfo  
 
 
 ###
-GET http://{{Host}}:{{Port}}/testasync
+GET http://{{Host}}:{{Port}}/admin/testasync
+
+
+
+###
+GET http://{{Host}}:{{Port}}/admin/home

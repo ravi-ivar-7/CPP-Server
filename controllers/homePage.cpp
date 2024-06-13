@@ -1,3 +1,66 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <boost/beast.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include "../includes/homePage.hpp"
+#include <boost/filesystem.hpp>
+
+namespace http = boost::beast::http;
+using tcp = boost::asio::ip::tcp;
+namespace fs = boost::filesystem;
+
+// [REQUEST   : GET/admin/home ]
+// Error reading request: end of stream
+
+
+void homePage(tcp::socket &&socket, http::request<http::string_body> &&req)
+{
+    // Path to the HTML file
+    std::string htmlFilePath = "./templates/homePage.html"; 
+
+    // Read the HTML file content
+    std::ifstream htmlFile(htmlFilePath);
+    if (!htmlFile.is_open())
+    {
+        // Handle file open error
+        http::response<http::string_body> res{http::status::internal_server_error, req.version()};
+        res.set(http::field::content_type, "text/plain");
+        res.body() = "Unable to open HTML file.";
+        res.prepare_payload();
+        http::write(socket, res);
+        return;
+    }
+
+    try
+    {
+        std::stringstream buffer;
+        buffer << htmlFile.rdbuf();
+        std::string htmlContent = buffer.str();
+
+        // Create the HTTP response
+        http::response<http::string_body> res{http::status::ok, req.version()};
+        res.set(http::field::content_type, "text/html");
+        res.body() = htmlContent;
+        res.prepare_payload();
+        http::write(socket, res);
+    }
+    catch(const std::exception& e)
+    {
+        // Handle file read error
+        http::response<http::string_body> res{http::status::internal_server_error, req.version()};
+        res.set(http::field::content_type, "text/plain");
+        res.body() = "Error reading HTML file.";
+        res.prepare_payload();
+        http::write(socket, res);
+    }
+
+    // Close the HTML file
+    htmlFile.close();
+}
+
+
 // #include "homePage.hpp"
 // #include <fstream>
 // #include <sstream>
@@ -42,8 +105,6 @@
 //     return "File uploaded successfully";
 // }
 
-
-
 // // Function to parse multipart form data (simplified for illustration)
 // std::vector<std::string> parseMultipartFormData(std::string body, const std::string& boundary) {
 //     std::vector<std::string> fileContents;
@@ -61,38 +122,3 @@
 
 //     return fileContents;
 // }
-
-
-#include "../includes/homePage.hpp"
-#include <boost/beast.hpp>
-#include <string>
-
-namespace beast = boost::beast;
-namespace http = beast::http;
-using tcp = boost::asio::ip::tcp;
-
-void homePage(tcp::socket &&socket, http::request<http::string_body> &&req) {
-    std::string htmlContent = R"(
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Home Page</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 40px; }
-                h1 { color: #333; }
-                p { font-size: 18px; }
-            </style>
-        </head>
-        <body>
-            <h1>Welcome to the Home Page</h1>
-            <p>This is a simple homepage served by a C++ HTTP server using Boost.Beast.</p>
-        </body>
-        </html>
-    )";
-
-    http::response<http::string_body> res{http::status::ok, req.version()};
-    res.set(http::field::content_type, "text/html");
-    res.body() = htmlContent;
-    res.prepare_payload();
-    http::write(socket, res);
-}

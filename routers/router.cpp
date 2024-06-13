@@ -1,8 +1,8 @@
 #include "router.hpp"
 #include "../includes/handleFiles.hpp"
 #include "../includes/common.hpp"
+#include "../includes/homePage.hpp"
 #include "../includes/utils/sysServerInfo.hpp"
-// #include "../includes/homePage.hpp"
 #include <iostream>
 
 #include <boost/beast.hpp>
@@ -29,27 +29,35 @@ void Router::RouteRequest(std::shared_ptr<tcp::socket> socket)
                           std::cout << "[CLIENT IP : " << clientIp << " ]" << std::endl;
                           std::cout << "[REQUEST   : " << req->method_string() << req->target() << " ]" << std::endl;
 
+                        //   // Check if the request is a WebSocket upgrade request
+                        //   if (websocket::is_upgrade(*req))
+                        //   {
+                        //      // Handle WebSocket upgrade request
+                        //      WebSocketController::HandleRequest(std::move(*socket), std::move(*req));
+                        //      return;
+                        //   }
+
                           // Determine the request method and target
-                          if (req->method() == http::verb::post && req->target() == "/api/upload")
+                          if (req->method() == http::verb::post && req->target() == "/admin/upload")
                           {
                              handleFileUpload(std::move(*socket), std::move(*req));
                           }
-                          else if (req->method() == http::verb::get && req->target() == "/api/download")
+                          else if (req->method() == http::verb::get && req->target() == "/admin/download")
                           {
                              handleFileDownload(std::move(*socket), std::move(*req));
                           }
-                          else if (req->method() == http::verb::get && req->target().find("/api/sysServerInfo") == 0)
+                          else if (req->method() == http::verb::get && req->target().find("/admin/sysServerInfo") == 0)
                           {
                              sysServerInfo(std::move(*socket), std::move(*req));
                           }
-                          else if (req->method() == http::verb::get && req->target().starts_with("/testasync"))
+                          else if (req->method() == http::verb::get && req->target().starts_with("/admin/testasync"))
                           {
                              testAsync(std::move(*socket), std::move(*req));
                           }
-                        //   else if (req->method() == http::verb::get && req->target() == "api/home")
-                        //   {
-                        //      home(std::move(*socket), std::move(*req));
-                        //   }
+                          else if (req->method() == http::verb::get && req->target() == "/admin/home")
+                          {
+                             homePage(std::move(*socket), std::move(*req));
+                          }
                           else
                           {
                              handleNotFound(std::move(*socket), std::move(*req));
