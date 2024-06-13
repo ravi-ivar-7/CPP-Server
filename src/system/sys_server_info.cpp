@@ -7,6 +7,8 @@
 #include <nlohmann/json.hpp>
 #include <unordered_map>
 #include <vector>
+#include "../utils/common.hpp"
+#include "sys_server_info.hpp"
 
 using json = nlohmann::json;
 namespace asio = boost::asio;
@@ -91,23 +93,6 @@ int getCoresNum()
     }
 }
 
-std::unordered_map<std::string, std::string> getQueryParams(const std::string &query)
-{
-    std::unordered_map<std::string, std::string> keyValues;
-    std::vector<std::string> pairs;
-    boost::split(pairs, query, boost::is_any_of("&"));
-    for (const auto &pair : pairs)
-    {
-        std::vector<std::string> thisKeyValue;
-        boost::split(thisKeyValue, pair, boost::is_any_of("="));
-        if (thisKeyValue.size() == 2)
-        {
-            keyValues[thisKeyValue[0]] = thisKeyValue[1];
-        }
-    }
-    return keyValues;
-}
-
 void sysServerInfo(tcp::socket &&socket, http::request<http::string_body> &&req)
 {
     try
@@ -121,7 +106,9 @@ void sysServerInfo(tcp::socket &&socket, http::request<http::string_body> &&req)
             std::unordered_map<std::string, std::string> queryParams;
             std::string queryString = target.substr(pos + 1);
             queryParams = getQueryParams(queryString);
-            sysInfo = queryParams["sysInfo"];
+            auto it = queryParams.find("sysInfo");
+            if (it != queryParams.end())
+                sysInfo = it->second;
         }
 
         json json_res;

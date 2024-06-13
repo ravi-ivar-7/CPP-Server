@@ -3,6 +3,14 @@
 @Port = 7000
 
 
+### Getting system-server-info
+GET http://{{Host}}:{{Port}}/sys-server-info?sysInfo=true
+
+
+### Download file from server
+GET http://{{Host}}:{{Port}}/download-file?filePath=tests/rest.http
+
+
 
 ### Upload File To Server
 POST http://{{Host}}:{{Port}}/admin/upload
@@ -16,17 +24,7 @@ Content-Type: application/pdf
 
 
 
-
-### Download File From Server
-GET http://{{Host}}:{{Port}}/admin/download
-
-# Save the downloaded content to a local file.
-> ./downloaded_file
-
-
-
 ###
-GET http://{{Host}}:{{Port}}/sys-server-info?sysInfo=sss
 
 
 ###

@@ -2,8 +2,8 @@
 #define ERROR_HANDLING_HPP
 
 #include <boost/beast.hpp>
-#include <iostream> // for std::cerr
-#include <stdexcept> // for std::exception and its subclasses
+#include <iostream> 
+#include <stdexcept>
 
 namespace http = boost::beast::http;
 

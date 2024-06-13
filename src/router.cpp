@@ -4,7 +4,8 @@
 
 #include "router.hpp"
 #include "./system/sys_server_info.hpp"
-#include "./utils/not_found.hpp"
+#include "./utils/common.hpp"
+#include "./files/download.hpp"
 
 namespace beast = boost::beast;
 namespace http = beast::http;
@@ -23,6 +24,8 @@ void Router::RouteRequest(std::shared_ptr<tcp::socket> socket)
                          {
                              if (req->method() == http::verb::get && req->target().starts_with("/sys-server-info")) 
                                  sysServerInfo(std::move(*socket), std::move(*req));// in browser, http://localhost:7000/sys-server-info gives error (end of stream)
+                            if (req->method() == http::verb::get && req->target().starts_with("/download-file")) 
+                                 downloadFile(std::move(*socket), std::move(*req));
 
 
 
