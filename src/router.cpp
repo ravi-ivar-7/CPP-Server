@@ -6,6 +6,7 @@
 #include "./system/sys_server_info.hpp"
 #include "./utils/common.hpp"
 #include "./files/download.hpp"
+#include "./files/upload.hpp"
 
 namespace beast = boost::beast;
 namespace http = beast::http;
@@ -22,31 +23,12 @@ void Router::RouteRequest(std::shared_ptr<tcp::socket> socket)
                      {
                          if (!ec)
                          {
-                             if (req->method() == http::verb::get && req->target().starts_with("/sys-server-info")) 
-                                 sysServerInfo(std::move(*socket), std::move(*req));// in browser, http://localhost:7000/sys-server-info gives error (end of stream)
-                            if (req->method() == http::verb::get && req->target().starts_with("/download-file")) 
+                             if (req->method() == http::verb::get && req->target().starts_with("/sys-server-info"))
+                                 sysServerInfo(std::move(*socket), std::move(*req)); // in browser, http://localhost:7000/sys-server-info gives error (end of stream)
+                             if (req->method() == http::verb::get && req->target().starts_with("/download-file"))
                                  downloadFile(std::move(*socket), std::move(*req));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                             if (req->method() == http::verb::post && req->target().starts_with("/upload-file"))
+                                 uploadFile(std::move(*socket), std::move(*req));
 
                              else
                                  notFound(std::move(*socket), std::move(*req));

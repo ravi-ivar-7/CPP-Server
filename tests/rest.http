@@ -13,14 +13,13 @@ GET http://{{Host}}:{{Port}}/download-file?filePath=tests/rest.http
 
 
 ### Upload File To Server
-POST http://{{Host}}:{{Port}}/admin/upload
+POST http://{{Host}}:{{Port}}/upload-file
 Content-Type: multipart/form-data
-
-Content-Disposition: form-data; name="file"; filename="index.htm"
+Content-Disposition: form-data; name="file"; filename="rest.py"
 Content-Type: application/pdf
 
 # The file content is read from the local file system at the specified path.
-< ./boost_1_85_0/index.htm
+< ./tests/rest.py
 
 
 

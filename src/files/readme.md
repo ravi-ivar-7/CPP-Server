@@ -1,13 +1,16 @@
-# File Download Server
+# Downlaod - Upload File
 
-Download the specified file from the server.
- 
+- Download the specified file from the server.
+- Upload file to server.
+
 ## Features
 
-- HTTP server using Boost.Beast and Boost.Asio
-- Handles GET requests to download files
 - Supports various MIME types
 - Reads files from the server's filesystem and sends them to the client
+
+- Handles HTTP POST requests with file uploads.
+- Extracts filenames from the `Content-Disposition` header.
+- Saves uploaded files to the `assets/downloads` directory.
 
 ## Dependencies
 
@@ -17,13 +20,34 @@ Download the specified file from the server.
 - Boost.Algorithm
 
 ## Installation
+- Download and install Boost libraries from [Boost website](https://www.boost.org/).
 
-1. **Install Boost Libraries**
+## OR
 
-   Ensure you have Boost libraries installed on your system. You can download and install them from the [Boost website](https://www.boost.org/).
+## Ubuntu/Debian
 
-2. **Clone the Repository**
+```sh
+sudo apt-get install libboost-all-dev
+```
 
-   ```bash
-   git clone https://github.com/yourusername/file-download-server.git
-   cd file-download-server
+## API Endpoints
+- **Downlaod-URL**: `/download-file?fileName=downloadfile.txt`
+- **Method**: `GET`
+- **Description**: Download a server file, fileName is considered from root folder
+
+- **Upload-URL**: `/upload-file`
+- **Method**: `POST`
+- **Description**: Upload a file to server
+
+
+## Code Overview
+- `getFileExtension()`
+- `downloadFile()`: Handle incoming HTTP request for downloading files.
+
+- `getFileName()`
+- `uploadFile()` : Handle Post HTTP request for uploading files.
+
+
+
+## Acknowledgments
+- https://www.boost.org/
