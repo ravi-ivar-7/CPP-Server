@@ -10,7 +10,7 @@ namespace fs = boost::filesystem;
 
 std::mutex writeFileMutex;
 
-void writeFile(const std::string &filePath, const std::string &data)
+void writeFile(const std::string &filePath, const std::string &data) // filePath from root dir including name of file
 {
     try
     {
@@ -26,7 +26,15 @@ void writeFile(const std::string &filePath, const std::string &data)
         if (!outFile)
             throw std::ios_base::failure("Failed to open the file for writing.");
 
-        outFile << data;
+        if (!outFile.tellp())
+        {
+            outFile << data;
+        }
+        else
+        {
+            outFile << "\n" << data; // Start new line for subsequent entries
+        }
+
         outFile.close();
         std::cout << "Data written to file successfully." << std::endl;
     }

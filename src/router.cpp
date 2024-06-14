@@ -8,6 +8,8 @@
 #include "./files/download.hpp"
 #include "./files/upload.hpp"
 #include "./client/render_html.hpp"
+#include "./auth/authenticate.hpp"
+#include "./security/encryption_decryption.hpp"
 
 namespace beast = boost::beast;
 namespace http = beast::http;
@@ -30,8 +32,14 @@ void Router::RouteRequest(std::shared_ptr<tcp::socket> socket)
                                  downloadFile(std::move(*socket), std::move(*req));
                              if (req->method() == http::verb::post && req->target().starts_with("/upload-file"))
                                  uploadFile(std::move(*socket), std::move(*req));
-                            if (req->method() == http::verb::get && req->target().starts_with("/render-html"))
+                             if (req->method() == http::verb::get && req->target().starts_with("/render-html"))
                                  renderHtml(std::move(*socket), std::move(*req));
+                             if (req->method() == http::verb::get && req->target().starts_with("/authenticate"))
+                                 authenticate(std::move(*socket), std::move(*req));
+                             if (req->method() == http::verb::post && req->target().starts_with("/encrypt-data"))
+                                 encryptData(std::move(*socket), std::move(*req));
+                             if (req->method() == http::verb::post && req->target().starts_with("/decrypt-data"))
+                                 decryptData(std::move(*socket), std::move(*req));
 
                              else
                                  notFound(std::move(*socket), std::move(*req));

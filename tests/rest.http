@@ -20,17 +20,37 @@ POST http://{{Host}}:{{Port}}/upload-file
 Content-Type: multipart/form-data
 Content-Disposition: form-data; name="file"; filename="rest.py"
 Content-Type: application/pdf
+
 # The file content is read from the local file system at the specified path.
 < ./tests/rest.py
 
 
 ### Authenticate
-POST http://{{Host}}:{{Port}}/authenticate
+GET http://{{Host}}:{{Port}}/authenticate
 Content-Type: application/json
+
 {
-    "username": "user1",
-    "password": "password1"
+    "username1": "user",
+    "password": "userpassword"
 }
 
 
+### Encrypt Data
+POST http://{{Host}}:{{Port}}/encrypt-data
+Content-Type: application/json
 
+{
+   "data1": "hello i am ravi kumar"
+}
+
+
+### Decrypt Data
+POST http://{{Host}}:{{Port}}/decrypt-data
+Content-Type: application/json
+
+{
+   "data": "WwNMzm0FZE3PA5mRV3aDzmVxJIXzVxznXwTbboUVFB0ToOIt/e3WDeGXU13liZ8HTXAQ9fwCnPtdo3PmIY6vUYP3Xu01svzMFdjnPac5sEzrOG7sBEnvMH1x22F47TGsL7aHOelj30rzZrUdSR4aYY6c5A3PEhRM/Ut6yBCl15k="
+}
+
+
+# w9oVV6j1wiLcPLCr4ShJBwY3wOxcKp1WH7FMNcGuUQcB35EJW4i6kjtm5eL12KDfYYIfuyiR/jhPvR5Qt/ehL/EO9d7Sjv0C+6hgIbcdkhc/zijPTIKNVDWaoR5Alj+0Liez3+0/r1/qJTAOOBJu/nPJQrl6bUHKWoWsnUc2kbc=
