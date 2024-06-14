@@ -1,97 +1,18 @@
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
-#include <boost/algorithm/string.hpp>
-#include <fstream>
 #include <iostream>
-#include <sstream>
-#include <nlohmann/json.hpp>
 #include <unordered_map>
-#include <vector>
-#include "../utils/common.hpp"
+#include <nlohmann/json.hpp>
+
+#include "../requests/utils.hpp"
 #include "sys_server_info.hpp"
+#include "utils.hpp"
 
 using json = nlohmann::json;
 namespace asio = boost::asio;
 namespace beast = boost::beast;
 namespace http = beast::http;
 using tcp = asio::ip::tcp;
-
-std::string getCpuInfo()
-{
-    try
-    {
-        std::ifstream cpuInfoFile("/proc/cpuinfo");
-        if (!cpuInfoFile.is_open())
-            throw std::runtime_error("Failed to open CPU-INFO file");
-
-        std::stringstream buffer;
-        buffer << cpuInfoFile.rdbuf();
-        cpuInfoFile.close();
-        return buffer.str();
-    }
-    catch (const std::exception &ex)
-    {
-        std::cerr << "Error in getCpuInfo(): " << ex.what() << std::endl;
-        throw;
-    }
-}
-
-std::string getMemoryInfo()
-{
-    try
-    {
-        std::ifstream memInfoFile("/proc/meminfo");
-        if (!memInfoFile.is_open())
-            throw std::runtime_error("Failed to open MEMORY-INFO file");
-
-        std::stringstream buffer;
-        buffer << memInfoFile.rdbuf();
-        memInfoFile.close();
-        return buffer.str();
-    }
-    catch (const std::exception &ex)
-    {
-        std::cerr << "Error in getMemoryInfo(): " << ex.what() << std::endl;
-        throw;
-    }
-}
-
-long getUpTime()
-{
-    try
-    {
-        std::ifstream uptimeFile("/proc/uptime");
-        if (!uptimeFile.is_open())
-            throw std::runtime_error("Failed to open uptime file");
-
-        long uptime;
-        uptimeFile >> uptime;
-        uptimeFile.close();
-        return uptime;
-    }
-    catch (const std::exception &ex)
-    {
-        std::cerr << "Error in getUpTime(): " << ex.what() << std::endl;
-        throw;
-    }
-}
-
-int getCoresNum()
-{
-    try
-    {
-        int cores = sysconf(_SC_NPROCESSORS_ONLN);
-        if (cores == -1)
-            throw std::runtime_error("Failed to get CPU-CORES");
-
-        return cores;
-    }
-    catch (const std::exception &ex)
-    {
-        std::cerr << "Error in getCoresNum(): " << ex.what() << std::endl;
-        throw;
-    }
-}
 
 void sysServerInfo(tcp::socket &&socket, http::request<http::string_body> &&req)
 {

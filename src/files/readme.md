@@ -19,16 +19,6 @@
 - Boost.Filesystem
 - Boost.Algorithm
 
-## Installation
-- Download and install Boost libraries from [Boost website](https://www.boost.org/).
-
-## OR
-
-## Ubuntu/Debian
-
-```sh
-sudo apt-get install libboost-all-dev
-```
 
 ## API Endpoints
 - **Downlaod-URL**: `/download-file?fileName=downloadfile.txt`
@@ -47,7 +37,10 @@ sudo apt-get install libboost-all-dev
 - `getFileName()`
 - `uploadFile()` : Handle Post HTTP request for uploading files.
 
-
+<!-- 
+For file-system link against the Boost Filesystem library when compiling using g++
+g++ -o files files.cpp -I/usr/include -lboost_system -lboost_filesystem 
+ -->
 
 ## Acknowledgments
 - https://www.boost.org/

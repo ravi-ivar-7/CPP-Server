@@ -9,4 +9,4 @@ using tcp = boost::asio::ip::tcp;
 
 void downloadFile(tcp::socket &&socket, http::request<http::string_body> &&req);
 
-#endif // SRC_SYSTEM_SYS_SERVER_INFO_HPP
+#endif // SRC_FILES_DOWNLOAD_HPP

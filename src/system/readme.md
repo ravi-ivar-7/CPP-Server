@@ -33,6 +33,7 @@ sudo apt-get install -y nlohmann-json3-dev
 - `getMemoryInfo():` Reads and returns memory information from /proc/meminfo.
 - `getUpTime():` Reads and returns system uptime from /proc/uptime.
 - `getCoresNum():` Retrieves and returns the number of CPU cores using sysconf.
+
 - `sysServerInfo():` Handles incoming HTTP requests and sends back system information in JSON format.
 
 

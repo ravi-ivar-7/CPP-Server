@@ -10,33 +10,21 @@
 #include <unordered_map>
 
 #include "./upload.hpp"
-#include "../utils/common.hpp"
+#include "utils.hpp"
 
 namespace beast = boost::beast;
 namespace http = beast::http;
 namespace fs = boost::filesystem;
 using tcp = boost::asio::ip::tcp;
 
-std::string getFileName(const std::string &contentDisposition)
-{
-    std::string fileName;
-    size_t pos = contentDisposition.find("filename=");
-    if (pos != std::string::npos)
-    {
-        fileName = contentDisposition.substr(pos + 9);
-        if (fileName.front() == '"' && fileName.back() == '"')
-        { // remove any surrounding quotes
-            fileName = fileName.substr(1, fileName.size() - 2);
-        }
-    }
-    return fileName;
-}
+
+
+// TODO: RECONSIDER THIS UPLOADFILE CODE, MAINLY ISSUE WITH FILENAME AND BODY CONTENT
 
 void uploadFile(tcp::socket &&socket, http::request<http::string_body> &&req)
 {
     try
     {
-        auto it = req.find("Content-Disposition");
         auto& headers = req.base();
 
         auto cdheader = headers.find(http::field::content_disposition);
