@@ -41,19 +41,34 @@ void encryptData(tcp::socket &&socket, http::request<http::string_body> &&req)
     }
     catch (const json::parse_error &e)
     {
-        throw std::runtime_error("JSON PARSINNG: " + std::string(e.what()));
+        std::string errorMsg = "JSON Parsing error: " + std::string(e.what());
+        saveLog("ERROR", errorMsg);
+        http::response<http::string_body> res{http::status::bad_request, req.version()};
+        res.set(http::field::server, "c++");
+        res.set(http::field::content_type, "text/plain");
+        res.body() = errorMsg;
+        res.prepare_payload();
+        http::write(socket, res);
     }
     catch (const json::type_error &e)
     {
-        throw std::runtime_error("JSON DATA ACCESS: " + std::string(e.what()));
+        std::string errorMsg = "JSON Data access error: " + std::string(e.what());
+        saveLog("ERROR", errorMsg);
+        http::response<http::string_body> res{http::status::bad_request, req.version()};
+        res.set(http::field::server, "c++");
+        res.set(http::field::content_type, "text/plain");
+        res.body() = errorMsg;
+        res.prepare_payload();
+        http::write(socket, res);
     }
     catch (const std::exception &e)
     {
-        saveLog("ERROR", std::string(e.what()));
+        std::string errorMsg = "Server error: " + std::string(e.what());
+        saveLog("ERROR", errorMsg);
         http::response<http::string_body> res{http::status::internal_server_error, req.version()};
         res.set(http::field::server, "c++");
         res.set(http::field::content_type, "text/plain");
-        res.body() = "SERVER ERROR: " + std::string(e.what());
+        res.body() = errorMsg;
         res.prepare_payload();
         http::write(socket, res);
     }
@@ -83,19 +98,34 @@ void decryptData(tcp::socket &&socket, http::request<http::string_body> &&req)
     }
     catch (const json::parse_error &e)
     {
-        throw std::runtime_error("JSON PARSINNG: " + std::string(e.what()));
+        std::string errorMsg = "JSON Parsing error: " + std::string(e.what());
+        saveLog("ERROR", errorMsg);
+        http::response<http::string_body> res{http::status::bad_request, req.version()};
+        res.set(http::field::server, "c++");
+        res.set(http::field::content_type, "text/plain");
+        res.body() = errorMsg;
+        res.prepare_payload();
+        http::write(socket, res);
     }
     catch (const json::type_error &e)
     {
-        throw std::runtime_error("JSON DATA ACCESS: " + std::string(e.what()));
+        std::string errorMsg = "JSON Data access error: " + std::string(e.what());
+        saveLog("ERROR", errorMsg);
+        http::response<http::string_body> res{http::status::bad_request, req.version()};
+        res.set(http::field::server, "c++");
+        res.set(http::field::content_type, "text/plain");
+        res.body() = errorMsg;
+        res.prepare_payload();
+        http::write(socket, res);
     }
     catch (const std::exception &e)
     {
-        saveLog("ERROR", std::string(e.what()));
+        std::string errorMsg = "Server error: " + std::string(e.what());
+        saveLog("ERROR", errorMsg);
         http::response<http::string_body> res{http::status::internal_server_error, req.version()};
         res.set(http::field::server, "c++");
         res.set(http::field::content_type, "text/plain");
-        res.body() = "SERVER ERROR: " + std::string(e.what());
+        res.body() = errorMsg;
         res.prepare_payload();
         http::write(socket, res);
     }

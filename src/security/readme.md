@@ -1,28 +1,32 @@
-# CPP-Server
+# Security: Encryption - Decryption
 
 ## Overview
-This project is a C++ server that uses Boost.Asio for networking, OpenSSL for encryption and decryption, and nlohmann/json for JSON parsing. The server can encrypt and decrypt data sent via HTTP requests.
+Functionalities for encryption and decryption using OpenSSL with RSA encryption algorithm. It also includes JSON parsing capabilities using nlohmann/json library. The module is designed to handle data sent via HTTP requests securely.
 
 ## Features
-- **Encryption and Decryption**: Utilizes RSA for encrypting and decrypting data.
-- **JSON Handling**: Uses nlohmann/json for parsing JSON data.
-- **Networking**: Implements a server using Boost.Asio for handling HTTP requests.
+- **Encryption and Decryption**: Uses RSA encryption algorithm from OpenSSL for securely encrypting and decrypting data.
 
-## Dependencies
-- [Boost](https://www.boost.org/)
-- [OpenSSL](https://www.openssl.org/)
-- [nlohmann/json](https://github.com/nlohmann/json)
-- [Boost.Beast](https://www.boost.org/doc/libs/1_75_0/libs/beast/doc/html/index.html)
+## API Endpoints
+- **URL**: `/encrypt-data`
+- **Method**: `POST`
+- **Description**: Encrypts data
 
-## Installation
-### Boost
-Make sure Boost is installed on your system. You can download and install it from the [Boost website](https://www.boost.org/).
+- **URL**: `/decrypt-data`
+- **Method**: `POST`
+- **Description**: decrypts given data
 
-### OpenSSL
-Ensure OpenSSL is installed. You can install it via your package manager:
-```bash
-# On Debian/Ubuntu
-sudo apt-get install libssl-dev
+## Code Overview
 
-# On CentOS/RHEL
-sudo yum install openssl-devel
+### Functions
+- `readPublicKeyFromBuffer()`: Reads RSA public key from a buffer.
+- `readPrivateKeyFromBuffer()`: Reads RSA private key from a buffer.
+- `rsaEncrypt(const std::string& data, const std::string& publicKeyStr)`: Encrypts data using RSA public key.
+- `rsaDecrypt(const std::string& encryptedData, const std::string& privateKeyStr)`: Decrypts encrypted data using RSA private key.
+- `encryptData(tcp::socket&& socket, http::request<http::string_body>&& req)`: Encrypts data received via HTTP request and sends encrypted response.
+- `decryptData(tcp::socket&& socket, http::request<http::string_body>&& req)`: Decrypts data received via HTTP request and sends decrypted response.
+
+### Dependencies
+- [Boost](https://www.boost.org/): Boost libraries for handling networking and other utilities.
+- [OpenSSL](https://www.openssl.org/): OpenSSL for RSA encryption and decryption.
+- [nlohmann/json](https://github.com/nlohmann/json): nlohmann/json for JSON parsing and serialization.
+- [Boost.Beast](https://www.boost.org/doc/libs/1_75_0/libs/beast/doc/html/index.html): Boost.Beast for handling HTTP requests and responses.

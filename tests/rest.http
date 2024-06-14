@@ -30,7 +30,7 @@ GET http://{{Host}}:{{Port}}/authenticate
 Content-Type: application/json
 
 {
-    "username1": "user",
+    "username": "user",
     "password": "userpassword"
 }
 
@@ -53,4 +53,14 @@ Content-Type: application/json
 }
 
 
-# w9oVV6j1wiLcPLCr4ShJBwY3wOxcKp1WH7FMNcGuUQcB35EJW4i6kjtm5eL12KDfYYIfuyiR/jhPvR5Qt/ehL/EO9d7Sjv0C+6hgIbcdkhc/zijPTIKNVDWaoR5Alj+0Liez3+0/r1/qJTAOOBJu/nPJQrl6bUHKWoWsnUc2kbc=
+### Make a get fetch request
+GET http://{{Host}}:{{Port}}/get-request?host=jsonplaceholder.typicode.com&ep=/posts/100
+
+
+### Make a POST  request
+POST http://{{Host}}:{{Port}}/post-request?host=jsonplaceholder.typicode.com&ep=/posts
+Content-Type: application/json
+
+{
+   "data":"hellso"
+}

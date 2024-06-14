@@ -1,12 +1,15 @@
-# Authentication Server
+# Authentication
 
-HTTP authentication server using Boost.Beast, Boost.Asio, Boost.Filesystem, and nlohmann::json. It uses bcrypt for password hashing and verification.
+Uses bcrypt for password hashing and verification.
 
 ## Features
 
-- HTTP server for handling authentication requests.
-- JSON-based request handling.
 - Password hashing and verification using bcrypt.
+
+## API Endpoints
+- **URL**: `/authenticate`
+- **Method**: `GET`
+- **Description**: Authenticate user based on json data sent.
 
 ## Dependencies
 

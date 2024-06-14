@@ -16,6 +16,7 @@ namespace http = beast::http;
 namespace fs = boost::filesystem;
 using tcp = boost::asio::ip::tcp;
 
+// TODO: RECONSIDER BELOW CODE
 // Sends file from server to client
 void downloadFile(tcp::socket &&socket, http::request<http::string_body> &&req)
 {

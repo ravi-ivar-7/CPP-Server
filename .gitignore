@@ -1,8 +1,10 @@
 .vscode
 .env
-/boost_1_85_0
-/__pycache__
+boost_1_85_0
+__pycache__
 bcrypt
+assets/downloads
+assets/logs
 # Ignore object files
 *.o
 *.obj

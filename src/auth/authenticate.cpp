@@ -24,15 +24,12 @@ void authenticate(tcp::socket &&socket, http::request<http::string_body> &&req)
 {
     try
     {
-        // Parse the request body
         const std::string &body = req.body();
         json parsedBody = json::parse(body);
 
-        // Extract username and password
         std::string username = parsedBody.at("username").get<std::string>();
         std::string password = parsedBody.at("password").get<std::string>();
 
-        // Validate credentials
         bool isAuthenticated = false;
         auto it = credentials.find(username);
         if (it != credentials.end())
@@ -40,7 +37,6 @@ void authenticate(tcp::socket &&socket, http::request<http::string_body> &&req)
             isAuthenticated = bcrypt::validatePassword(password, it->second);
         }
 
-        // Prepare the response
         http::response<http::string_body> res{http::status::ok, req.version()};
         res.set(http::field::server, "c++");
         res.set(http::field::content_type, "text/plain");

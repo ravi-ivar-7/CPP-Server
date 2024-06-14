@@ -19,7 +19,7 @@ using tcp = boost::asio::ip::tcp;
 
 
 
-// TODO: RECONSIDER THIS UPLOADFILE CODE, MAINLY ISSUE WITH FILENAME AND BODY CONTENT
+// TODO: RECONSIDER THIS UPLOADFILE CODE, ISSUE WITH FILENAME AND BODY CONTENT
 
 void uploadFile(tcp::socket &&socket, http::request<http::string_body> &&req)
 {

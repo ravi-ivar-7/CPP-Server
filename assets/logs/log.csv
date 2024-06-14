@@ -2,3 +2,9 @@
 [Fri Jun 14 15:17:35 2024] : ERROR : error:0200006C:rsa routines::data greater than mod len
 [Fri Jun 14 15:18:45 2024] : ERROR : [json.exception.out_of_range.403] key 'data' not found
 [Fri Jun 14 15:18:49 2024] : ERROR : [json.exception.out_of_range.403] key 'data' not found
+[Fri Jun 14 18:49:43 2024] : ERROR : stream truncated
+[Fri Jun 14 18:53:20 2024] : ERROR : stream truncated
+[Fri Jun 14 18:56:11 2024] : ERROR : stream truncated
+[Fri Jun 14 18:58:42 2024] : ERROR : Server error: [json.exception.out_of_range.403] key 'username' not found
+[Fri Jun 14 19:16:03 2024] : ERROR : connect: Connection refused
+[Fri Jun 14 23:51:18 2024] : ERROR : Missing host or endpoint in query parameters

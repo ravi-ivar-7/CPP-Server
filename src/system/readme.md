@@ -10,19 +10,6 @@ Provides system information such as CPU details, memory information, system upti
 - **System Uptime**: Retrieves and displays system uptime from `/proc/uptime`.
 - **CPU Cores**: Retrieves and displays the number of CPU cores using `sysconf`.
 
-## Prerequisites
-
-- Boost (Asio and Beast)
-- nlohmann/json
-
-## Installing Dependencies on Debian-based Systems
-
-```bash
-sudo apt-get update
-sudo apt-get install -y libboost-all-dev
-sudo apt-get install -y nlohmann-json3-dev
-```
-
 ## API Endpoints
 - **URL**: `/sys-server-info?sysInfo=true`
 - **Method**: `GET`
@@ -36,7 +23,9 @@ sudo apt-get install -y nlohmann-json3-dev
 
 - `sysServerInfo():` Handles incoming HTTP requests and sends back system information in JSON format.
 
+- `saveLog():` Handles log data and save it to a file. 
 
-## Acknowledgments
-- https://www.boost.org/
-- https://github.com/nlohmann/json
+## Dependencies
+- [Boost](https://www.boost.org/)
+- [nlohmann/json](https://github.com/nlohmann/json)
+- [Boost.Beast](https://www.boost.org/doc/libs/1_75_0/libs/beast/doc/html/index.html)

@@ -6,6 +6,7 @@
 
 #include "../files/utils.hpp"
 #include "../requests/utils.hpp"
+#include "../system/log.hpp"
 #include "render_html.hpp"
 
 namespace beast = boost::beast;
@@ -28,8 +29,7 @@ void renderHtml(tcp::socket &&socket, http::request<http::string_body> &&req)
             htmlFilePath = it->second;
         else
         {
-            std::cerr << "NO FILE PATH PROVIDED" << std::endl;
-            throw std::runtime_error("No file path provided");
+            throw std::runtime_error("NO FILE PATH PROVIDED");
         }
     }
 
@@ -44,6 +44,8 @@ void renderHtml(tcp::socket &&socket, http::request<http::string_body> &&req)
     }
     catch (const std::exception &e)
     {
+        saveLog("ERROR", std::string(e.what()));
+
         http::response<http::string_body> res{http::status::internal_server_error, req.version()};
         res.set(http::field::content_type, "text/plain");
         res.body() = "Error reading HTML file.";

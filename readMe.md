@@ -1,35 +1,84 @@
 ```
-project/
+CPP-Server/
 ├── CMakeLists.txt
 ├── makefile
-├── main.cpp
-├── rest.http
+├── .gitignore
+├── readme.md
+|
+|── assets/
+│   ├── downloads
+|   ├── logs/log.csv
+|   ├── js
+│   └── css
 |
 ├── config/
 │   ├── .env
-│   └── key.pem
+|   ├── publicKey.pem
+│   └── privateKey.pem
 |
-├── routers/
-│   ├── router.cpp
-│   └── router.hpp
+├── docs/
+│   ├── 
+│   └── 
 |
-├── controllers/
-|   ├── utils
+├── src/
+|   ├── auth
+|   |       ├── authenticate.cpp
+|   |       ├── authenticate.hpp
+│   |       └── readme.md
+|   ├── client
+|   |       ├── render_html.cpp
+|   |       ├── render_html.hpp
+│   |       └── readme.md
+|   ├── files
+|   |       ├── download.cpp
+|   |       ├── download.hpp
+|   |       ├── upload.cpp
+|   |       ├── upload.hpp
+|   |       ├── utils.cpp
+|   |       ├── utils.hpp
+│   |       └── readme.md
+|   ├── requests
 |   |       ├── HttpServic.cpp
-|   |       ├── HttpAcceptor.cpp
-│   |       └── HttpServer.cpp
-│   |
-│   ├── handleFiles.cpp
-│   └── common.cpp
-|
-├── includes/
+|   |       ├── utils.cpp
+|   |       ├── utils.hpp
+│   |       └── readme.md
+|   ├── security
+|   |       ├── encryption_decrypton.cpp
+|   |       ├── encryption_decrypton.hpp
+|   |       ├── utils.cpp
+|   |       ├── utils.hpp
+│   |       └── readme.md
+|   ├── servers
+|   |       ├── http_server.cpp
+|   |       ├── http_server.hpp
+│   |       └── readme.md
+|   ├── streaming
+|   |       ├── text.cpp
+|   |       ├── text.cpp
+│   |       └── readme.md
+|   ├── system
+|   |       ├── log.cpp
+|   |       ├── log.hpp
+|   |       ├── sys_server_info.cpp
+|   |       ├── sys_server_info.hpp
+|   |       ├── utils.cpp
+|   |       ├── utils.hpp
+│   |       └── readme.md
 |   ├── utils
-|   |       ├── HttpServic.hpp
-|   |       ├── HttpAcceptor.hpp
-│   |       └── HttpServer.hpp
+|   |       ├── .cpp
+|   |       ├── .hpp
+│   |       └── readme.md
+|
+├── templates/
 │   |
-│   ├── handleFiles.hpp
-│   └── common.hpp
+│   ├── home.html
+│   └── client.html
+|
+├── tests/
+│   |
+│   ├── locustfile.py
+|   ├── rest.http
+│   └── api.py
 
 ```
 ## To compile, build, and run the server in WSL:
@@ -37,7 +86,7 @@ project/
 ```
 Go to root directory
 Run the make command to compile the server
-Run server with compilled file like ./server
+Run server with compilled file $ ./server
 ```
 
 ### Using `CMake`
@@ -54,3 +103,41 @@ cmake ..
 make
 ./server
 ```
+
+
+
+
+
+
+
+## Installation
+### Boost
+
+```bash
+Download and install it from the [Boost website](https://www.boost.org/).
+OR
+sudo apt-get update
+sudo apt-get install -y libboost-all-dev
+```
+
+### Nlohmann/json
+```
+sudo apt-get install -y nlohmann-json3-dev
+```
+
+### OpenSSL
+```bash
+# On Debian/Ubuntu
+sudo apt-get install libssl-dev
+
+# On CentOS/RHEL
+sudo yum install openssl-devel
+```
+
+
+
+
+## Acknowledgments
+- https://www.boost.org/
+- https://github.com/nlohmann/json
+- https://www.openssl.org/

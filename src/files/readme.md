@@ -12,13 +12,6 @@
 - Extracts filenames from the `Content-Disposition` header.
 - Saves uploaded files to the `assets/downloads` directory.
 
-## Dependencies
-
-- Boost.Beast
-- Boost.Asio
-- Boost.Filesystem
-- Boost.Algorithm
-
 
 ## API Endpoints
 - **Downlaod-URL**: `/download-file?fileName=downloadfile.txt`
@@ -41,6 +34,5 @@
 For file-system link against the Boost Filesystem library when compiling using g++
 g++ -o files files.cpp -I/usr/include -lboost_system -lboost_filesystem 
  -->
-
-## Acknowledgments
-- https://www.boost.org/
+### Dependencies
+- [Boost](https://www.boost.org/): Boost libraries for handling networking and other utilities.

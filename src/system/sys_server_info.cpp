@@ -7,6 +7,7 @@
 #include "../requests/utils.hpp"
 #include "sys_server_info.hpp"
 #include "utils.hpp"
+#include "log.hpp"
 
 using json = nlohmann::json;
 namespace asio = boost::asio;
@@ -61,6 +62,7 @@ void sysServerInfo(tcp::socket &&socket, http::request<http::string_body> &&req)
     }
     catch (const std::exception &ex)
     {
+         saveLog("ERROR", ex.what());
         std::cerr << "Internal Server Error: " << ex.what() << std::endl;
         http::response<http::string_body> res{http::status::internal_server_error, req.version()};
         res.set(http::field::content_type, "text/plain");

@@ -10,4 +10,4 @@ Serve HTML files dynamically and provides functionalities for rendering HTML con
 
 
 ## Code Overview
-- `renderHtml()`
+- `renderHtml()`:Render Html file based on filePath
