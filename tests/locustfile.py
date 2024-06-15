@@ -14,7 +14,7 @@ class FileTaskTest(TaskSet):
 class SimpleTaskSet(TaskSet):
     @task(1)
     def sys_server_info(self):
-        self.client.get("/sys-server-info?sysInfo=true")
+        self.client.get("/sys-server-info")
 
 class SingleFunctionTester(TaskSet):
     @task(1)

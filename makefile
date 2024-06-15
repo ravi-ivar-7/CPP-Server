@@ -24,17 +24,16 @@ OBJS = $(SRCS:.cpp=.o)
 BOOST_INCLUDE_DIRS = /usr/include
 BOOST_LIB_DIRS = /usr/lib
 
-# Specify the Boost libraries to link against
-BOOST_LIBS = -lboost_system -lboost_filesystem
+
 
 # Include directories // header files folder
-INC_DIRS := -I./src -I./src/auth -I./src/client -I./src/files -I./src/requests -I./src/security -I./src/servers -I./src/streaming -I./src/system -I./src/utils -I./bcrypt/include
+INC_DIRS := -I./src -I./src/auth -I./src/client -I./src/files -I./src/requests -I./src/security -I./src/servers -I./src/streaming -I./src/system -I./src/utils -I./src/databases -I./bcrypt/include
 
 # Specify the directory for libraries (including bcrypt)
 LIB_DIRS = -L$(BOOST_LIB_DIRS) -L./bcrypt/build
 
 # Libraries to link against (including bcrypt)
-LIBS := $(BOOST_LIBS) -lbcrypt -lssl -lcrypto 
+LIBS := -lboost_system -lboost_filesystem -lbcrypt -lssl -lcrypto -lsqlite3
 
 
 # Build target
