@@ -13,8 +13,10 @@ SRCS := $(wildcard src/*.cpp) \
         $(wildcard src/requests/*.cpp) \
         $(wildcard src/security/*.cpp) \
         $(wildcard src/servers/*.cpp) \
-        $(wildcard src/streaming/*.cpp) \
+        $(wildcard src/websocket/*.cpp) \
         $(wildcard src/system/*.cpp) \
+        $(wildcard src/stream/*.cpp) \
+        $(wildcard src/routes/*.cpp) \
         $(wildcard src/utils/*.cpp)
 
 # Specify the object files
@@ -27,7 +29,7 @@ BOOST_LIB_DIRS = /usr/lib
 
 
 # Include directories // header files folder
-INC_DIRS := -I./src -I./src/auth -I./src/client -I./src/files -I./src/requests -I./src/security -I./src/servers -I./src/streaming -I./src/system -I./src/utils -I./src/databases -I./bcrypt/include
+INC_DIRS := -I./src -I./src/auth -I./src/client -I./src/files -I./src/requests -I./src/security -I./src/servers -I./src/system -I./src/utils -I./src/databases -I./src/websocket -I./src/stream -I./bcrypt/include
 
 # Specify the directory for libraries (including bcrypt)
 LIB_DIRS = -L$(BOOST_LIB_DIRS) -L./bcrypt/build

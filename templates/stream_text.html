@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+        }
+        #inputForm {
+            display: flex;
+        }
+        #inputForm input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #inputForm button {
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <div id="messages"></div>
+    <form id="inputForm">
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        // Connect to the WebSocket server
+        const socket = new WebSocket('ws://localhost:7000/stream-text'); 
+
+        // Connection opened
+        socket.addEventListener('open', function (event) {
+            appendMessage('Connected to WebSocket server');
+        });
+
+        // Listen for messages
+        socket.addEventListener('message', function (event) {
+            appendMessage('Server: ' + event.data);
+        });
+
+        // Connection closed
+        socket.addEventListener('close', function (event) {
+            appendMessage('Disconnected from WebSocket server');
+        });
+
+        // Handle errors
+        socket.addEventListener('error', function (event) {
+            appendMessage('WebSocket error: ' + event);
+        });
+
+        // Form submission to send a message
+        document.getElementById('inputForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+            if (message) {
+                socket.send(message);
+                appendMessage('You: ' + message);
+                messageInput.value = '';
+            }
+        });
+
+        // Function to append messages to the messages div
+        function appendMessage(message) {
+            const messagesDiv = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
+        }
+    </script>
+</body>
+</html>
