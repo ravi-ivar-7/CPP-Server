@@ -20,6 +20,12 @@ void WSUtils::wsRequest(tcp::socket &&socket, beast::http::request<beast::http::
         }
         std::string userId = getUserId(req);
 
+        if(activeSessions.find(userId) != activeSessions.end())
+        {
+            std::cerr<<"Active session exists."<<std::endl;
+            return;
+        }
+
         auto ws = std::make_shared<websocket::stream<tcp::socket>>(std::move(socket));
         {
             std::lock_guard<std::mutex> lock(sessionsMutex);
@@ -42,7 +48,7 @@ void WSUtils::doAccept(std::shared_ptr<websocket::stream<tcp::socket>> ws, beast
                 return;
             }
             auto buffer = std::make_shared<beast::flat_buffer>();
-            doRead(ws, std::move(req), *buffer);
+            doRead(ws, std::move(req), buffer);
         });
     } catch (const std::exception& e) {
         std::cerr << "Exception in doAccept: " << e.what() << std::endl;
@@ -51,9 +57,9 @@ void WSUtils::doAccept(std::shared_ptr<websocket::stream<tcp::socket>> ws, beast
     }
 }
 
-void WSUtils::doRead(std::shared_ptr<websocket::stream<tcp::socket>> ws, beast::http::request<beast::http::string_body> req, beast::flat_buffer &buffer) {
+void WSUtils::doRead(std::shared_ptr<websocket::stream<tcp::socket>> ws, beast::http::request<beast::http::string_body> req, std::shared_ptr<beast::flat_buffer> buffer) {
     try {
-        ws->async_read(buffer, [this, ws, &buffer, req](beast::error_code ec, std::size_t bytes_transferred) mutable {
+        ws->async_read(*buffer, [this, ws, buffer, req = std::move(req)](beast::error_code ec, std::size_t bytes_transferred) mutable {
             if (ec) {
                 std::cerr << "ERROR READING WS: " << ec.message() << std::endl;
 
@@ -67,10 +73,9 @@ void WSUtils::doRead(std::shared_ptr<websocket::stream<tcp::socket>> ws, beast::
 
                 return;
             }
-            auto message = beast::buffers_to_string(buffer.data());
-            onMessage(ws, req, message);
-            buffer.consume(bytes_transferred);
-            doRead(ws, std::move(req), buffer);
+            onMessage(ws, req, *buffer);
+            buffer->consume(bytes_transferred);
+            doRead(ws, std::move(req), buffer); 
         });
     } catch (const std::exception& e) {
         std::cerr << "Exception in doRead: " << e.what() << std::endl;
@@ -78,6 +83,8 @@ void WSUtils::doRead(std::shared_ptr<websocket::stream<tcp::socket>> ws, beast::
         std::cerr << "Unknown exception in doRead" << std::endl;
     }
 }
+
+
 
 void WSUtils::doWrite(std::shared_ptr<websocket::stream<tcp::socket>> ws, std::string message) {
     try {

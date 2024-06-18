@@ -16,7 +16,7 @@ using tcp = boost::asio::ip::tcp;
 class StreamText : public WSUtils
 {
 public:
-    void onMessage(std::shared_ptr<websocket::stream<tcp::socket>> ws, const beast::http::request<beast::http::string_body> &req, std::string message) override;
+    void onMessage(std::shared_ptr<websocket::stream<tcp::socket>> ws, const beast::http::request<beast::http::string_body> &req, beast::flat_buffer &buffer) override;
 
 protected:
     bool authenticate(const beast::http::request<beast::http::string_body> &req) override;

@@ -12,17 +12,17 @@ namespace beast = boost::beast;
 namespace websocket = beast::websocket;
 using tcp = boost::asio::ip::tcp;
 
-void StreamText::onMessage(std::shared_ptr<websocket::stream<tcp::socket>> ws, const beast::http::request<beast::http::string_body> &req, std::string message)
-{
+void StreamText::onMessage(std::shared_ptr<websocket::stream<tcp::socket>> ws, const beast::http::request<beast::http::string_body>& req, beast::flat_buffer& buffer) {
     try {
+        std::string message = beast::buffers_to_string(buffer.data());
+
         std::string userId = getUserId(req);
 
-        // broadcasting incoming message to all active sessions
+        // Broadcasting the incoming message to all active sessions
         std::lock_guard<std::mutex> lock(sessionsMutex);
-        for (const auto &session : activeSessions)
-        {
+        for (const auto& session : activeSessions) {
             std::string writeMessage = userId + " : " + message;
-            doWrite(session.second, writeMessage );
+            doWrite(session.second, std::move(writeMessage));
         }
     } catch (const std::exception& e) {
         std::cerr << "Exception in onMessage: " << e.what() << std::endl;
@@ -30,6 +30,7 @@ void StreamText::onMessage(std::shared_ptr<websocket::stream<tcp::socket>> ws, c
         std::cerr << "Unknown exception in onMessage" << std::endl;
     }
 }
+
 
 bool StreamText::authenticate(const beast::http::request<beast::http::string_body> &req)
 {

@@ -18,7 +18,7 @@ public:
     void wsRequest(tcp::socket &&socket, beast::http::request<beast::http::string_body> req);
 
 protected:
-    virtual void onMessage(std::shared_ptr<websocket::stream<tcp::socket>> ws, const beast::http::request<beast::http::string_body> &req, std::string message) = 0;
+    virtual void onMessage(std::shared_ptr<websocket::stream<tcp::socket>> ws, const beast::http::request<beast::http::string_body> &req, beast::flat_buffer &buffer) = 0;
     virtual void doWrite(std::shared_ptr<websocket::stream<tcp::socket>> ws,std::string message);
     virtual bool authenticate(const beast::http::request<beast::http::string_body> &req);
     virtual std::string getUserId(const beast::http::request<beast::http::string_body> &req);
@@ -28,7 +28,7 @@ protected:
 
 private:
     void doAccept(std::shared_ptr<websocket::stream<tcp::socket>> ws, beast::http::request<beast::http::string_body> req);
-    void doRead(std::shared_ptr<websocket::stream<tcp::socket>> ws, beast::http::request<beast::http::string_body> req, beast::flat_buffer &buffer);
+    void doRead(std::shared_ptr<websocket::stream<tcp::socket>> ws, beast::http::request<beast::http::string_body> req, std::shared_ptr<beast::flat_buffer> buffer);
 };
 
 #endif // SRC_WEBSOCKET_UTILS_HPP
