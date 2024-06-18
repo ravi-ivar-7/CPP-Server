@@ -1,200 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Stream Text With Auth</title>
-    <style>
+    <title>Stream Text</title>
+    <!-- <link rel="stylesheet" href="../assets/css/stream_text.css"> -->
+     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            transition: background-color 0.5s ease-in-out;
-        }
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    transition: background-color 0.5s ease-in-out;
+}
 
-        .container {
-            background: #1e1e1e;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            width: 400px;
-            transition: all 0.3s ease-in-out;
-        }
+.container {
+    background: #1e1e1e;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    width: 400px;
+    transition: all 0.3s ease-in-out;
+}
 
-        h1 {
-            text-align: center;
-            color: #ffffff;
-            margin-bottom: 20px;
-        }
+h1 {
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
 
-        #messages {
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 10px;
-            height: 300px;
-            overflow-y: scroll;
-            margin-bottom: 10px;
-            background: #2e2e2e;
-            color: #d4d4d4;
-        }
+#messages {
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    height: 300px;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+    background: #2e2e2e;
+    color: #d4d4d4;
+}
 
-        #inputForm {
-            display: flex;
-            margin-top: 10px;
-        }
+#inputForm {
+    display: flex;
+    margin-top: 10px;
+}
 
-        #inputForm input[type="text"], #inputForm button {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #333;
-            border-radius: 8px;
-            margin-right: 5px;
-            transition: all 0.3s ease-in-out;
-        }
+#inputForm input[type="text"], #inputForm button {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    margin-right: 5px;
+    transition: all 0.3s ease-in-out;
+}
 
-        #inputForm input[type="text"] {
-            flex: 1;
-            background: #2e2e2e;
-            color: #d4d4d4;
-        }
+#inputForm input[type="text"] {
+    flex: 1;
+    background: #2e2e2e;
+    color: #d4d4d4;
+}
 
-        #inputForm button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
+#inputForm button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
 
-        #inputForm button:hover {
-            background-color: #0056b3;
-        }
+#inputForm button:hover {
+    background-color: #0056b3;
+}
 
-        .form-group {
-            margin-bottom: 10px;
-        }
+.form-group {
+    margin-bottom: 10px;
+}
 
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #ffffff;
-        }
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ffffff;
+}
 
-        .form-group input[type="text"] {
-            width: calc(100% - 20px);
-            display: block;
-            margin: 0 auto;
-            background: #2e2e2e;
-            color: #d4d4d4;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #333;
-            border-radius: 8px;
-        }
+.form-group input[type="text"] {
+    width: calc(100% - 20px);
+    display: block;
+    margin: 0 auto;
+    background: #2e2e2e;
+    color: #d4d4d4;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #333;
+    border-radius: 8px;
+}
 
-        .error {
-            color: #ff6b6b;
-            margin-top: 5px;
-        }
+.error {
+    color: #ff6b6b;
+    margin-top: 5px;
+}
 
-        .btn-primary {
-            background-color: #1e88e5;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-        }
+.btn-primary {
+    background-color: #1e88e5;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
 
-        .btn-primary:hover {
-            background-color: #005cb2;
-        }
-
-    </style>
-    <script>
-        let ws;
-        let userId;
-
-        function authenticateAndConnect() {
-            userId = document.getElementById("userIdInput").value.trim();
-            const errorDiv = document.getElementById("error");
-
-            if (!userId) {
-                errorDiv.textContent = "User ID cannot be empty.";
-                return;
-            }
-            errorDiv.textContent = "";
-
-            const authToken = "StreamTextSecretToken";
-            const wsUrl = `ws://localhost:7000/stream-text?userId=${encodeURIComponent(userId)}&authToken=${encodeURIComponent(authToken)}`;
-
-            ws = new WebSocket(wsUrl);
-
-            ws.onopen = function () {
-                console.log("WebSocket connection established.");
-                appendMessage("WS CONNECTED");
-                sessionStorage.setItem('isAuthenticated', 'true');
-            };
-
-            ws.onmessage = function (event) {
-                console.log("Message received:", event.data);
-                appendMessage(event.data);
-            };
-
-            ws.onerror = function (event) {
-                console.error("WebSocket error:", event);
-                appendMessage("WS ERROR: " + event);
-            };
-
-            ws.onclose = function (event) {
-                console.log("WebSocket connection closed.");
-                appendMessage("WS CLOSED");
-            };
-        }
-
-        function sendWebSocketMessage() {
-            const messageInput = document.getElementById("messageInput");
-            const message = messageInput.value.trim();
-            const errorDiv = document.getElementById("error");
-
-            if (!message) {
-                errorDiv.textContent = "Message cannot be empty.";
-                return;
-            }
-            errorDiv.textContent = "";
-
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(message);
-                messageInput.value = '';
-            } else {
-                console.log("WebSocket connection is not open.");
-                appendMessage("WS CLOSED");
-            }
-        }
-
-        function appendMessage(message) {
-            const messagesDiv = document.getElementById("messages");
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            messagesDiv.appendChild(messageElement);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
-        
-    </script>
+.btn-primary:hover {
+    background-color: #005cb2;
+}
+     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>WebSocket Auth</h1>
+        <h1>WebSocket </h1>
 
         <div id="messages"></div>
 
@@ -210,13 +141,84 @@
             <button class="btn-primary" onclick="sendWebSocketMessage()">Send Message</button>
         </div>
     </div>
+
     <script>
-        document.getElementById("messageInput").addEventListener("keyup", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                sendWebSocketMessage();
-            }
-        });
+        let ws;
+let userId;
+
+function authenticateAndConnect() {
+    userId = document.getElementById("userIdInput").value.trim();
+    const errorDiv = document.getElementById("error");
+
+    if (!userId) {
+        errorDiv.textContent = "User ID cannot be empty.";
+        return;
+    }
+    errorDiv.textContent = "";
+
+    const authToken = "StreamTextSecretToken";
+    const wsUrl = `ws://localhost:7000/stream-text?userId=${encodeURIComponent(userId)}&authToken=${encodeURIComponent(authToken)}`;
+
+    ws = new WebSocket(wsUrl);
+
+    ws.onopen = function () {
+        console.log("WebSocket connection established.");
+        appendMessage("WS CONNECTED");
+        sessionStorage.setItem('isAuthenticated', 'true');
+    };
+
+    ws.onmessage = function (event) {
+        console.log("Message received:", event.data);
+        appendMessage(event.data);
+    };
+
+    ws.onerror = function (event) {
+        console.error("WebSocket error:", event);
+        appendMessage("WS ERROR: " + event);
+    };
+
+    ws.onclose = function (event) {
+        console.log("WebSocket connection closed.");
+        appendMessage("WS CLOSED");
+    };
+}
+
+function sendWebSocketMessage() {
+    const messageInput = document.getElementById("messageInput");
+    const message = messageInput.value.trim();
+    const errorDiv = document.getElementById("error");
+
+    if (!message) {
+        errorDiv.textContent = "Message cannot be empty.";
+        return;
+    }
+    errorDiv.textContent = "";
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(message);
+        messageInput.value = '';
+    } else {
+        console.log("WebSocket connection is not open.");
+        appendMessage("WS CLOSED");
+    }
+}
+
+function appendMessage(message) {
+    const messagesDiv = document.getElementById("messages");
+    const messageElement = document.createElement('div');
+    messageElement.textContent = message;
+    messagesDiv.appendChild(messageElement);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+document.getElementById("messageInput").addEventListener("keyup", function (event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        sendWebSocketMessage();
+    }
+});
     </script>
+
 </body>
+
 </html>

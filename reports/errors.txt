@@ -1,0 +1,9 @@
+[CLIENT IP : 127.0.0.1 ]
+[REQUEST   : GET/render-html?filePath=templates/home.html ]
+ERROR: end of stream
+
+
+
+[CLIENT IP : 127.0.0.1 ]
+[REQUEST   : GET/stream-text?userId=U-7-0&authToken=StreamTextSecretToken ]
+Segmentation fault

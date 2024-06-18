@@ -5,6 +5,7 @@ __pycache__
 bcrypt
 assets/downloads
 assets/logs
+node_modules
 # Ignore object files
 *.o
 *.obj

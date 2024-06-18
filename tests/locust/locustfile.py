@@ -11,22 +11,29 @@ class FileTaskTest(TaskSet):
     def download_file(self):
         self.client.get("/download-file?filePath=tests/rest.http")
 
-class SimpleTaskSet(TaskSet):
-    @task(1)
-    def sys_server_info(self):
-        self.client.get("/sys-server-info")
-
 class SingleFunctionTester(TaskSet):
     @task(1)
     def render_html(self):
         self.client.get("/render-html?filePath=templates/home.html")
+
+class FastApiTest(TaskSet):
+    @task(1)
+    def sys_server_info(self):
+        self.client.get("/sys-server-info")
+
+class NodejsTest(TaskSet):
+    @task(1) 
+    def sys_server_info(self):
+        self.client.get("/sys-server-info?sysInfo=true")
+#locust -f locustfile.py --host=http://localhost:3000 --web-port 7010
+
 
 
 
 
 
 class WebsiteUser(HttpUser):
-    tasks = [SimpleTaskSet]
+    tasks = [NodejsTest]
     wait_time = between(1, 2)
 
 
