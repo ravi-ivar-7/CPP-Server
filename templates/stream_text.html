@@ -2,84 +2,221 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>WebSocket Client</title>
+    <title>Stream Text With Auth</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background-color 0.5s ease-in-out;
         }
+
+        .container {
+            background: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            width: 400px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
         #messages {
-            border: 1px solid #ccc;
+            border: 1px solid #333;
+            border-radius: 8px;
             padding: 10px;
             height: 300px;
             overflow-y: scroll;
             margin-bottom: 10px;
+            background: #2e2e2e;
+            color: #d4d4d4;
         }
+
         #inputForm {
             display: flex;
+            margin-top: 10px;
         }
+
+        #inputForm input[type="text"], #inputForm button {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            margin-right: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+
         #inputForm input[type="text"] {
             flex: 1;
-            padding: 10px;
-            font-size: 16px;
+            background: #2e2e2e;
+            color: #d4d4d4;
         }
+
         #inputForm button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        #inputForm button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        .form-group input[type="text"] {
+            width: calc(100% - 20px);
+            display: block;
+            margin: 0 auto;
+            background: #2e2e2e;
+            color: #d4d4d4;
             padding: 10px;
             font-size: 16px;
+            border: 1px solid #333;
+            border-radius: 8px;
         }
+
+        .error {
+            color: #ff6b6b;
+            margin-top: 5px;
+        }
+
+        .btn-primary {
+            background-color: #1e88e5;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #005cb2;
+        }
+
     </style>
-</head>
-<body>
-    <h1>WebSocket Client</h1>
-    <div id="messages"></div>
-    <form id="inputForm">
-        <input type="text" id="messageInput" placeholder="Type a message...">
-        <button type="submit">Send</button>
-    </form>
-
     <script>
-        // Connect to the WebSocket server
-        const socket = new WebSocket('ws://localhost:7000/stream-text'); 
+        let ws;
+        let userId;
 
-        // Connection opened
-        socket.addEventListener('open', function (event) {
-            appendMessage('Connected to WebSocket server');
-        });
+        function authenticateAndConnect() {
+            userId = document.getElementById("userIdInput").value.trim();
+            const errorDiv = document.getElementById("error");
 
-        // Listen for messages
-        socket.addEventListener('message', function (event) {
-            appendMessage('Server: ' + event.data);
-        });
-
-        // Connection closed
-        socket.addEventListener('close', function (event) {
-            appendMessage('Disconnected from WebSocket server');
-        });
-
-        // Handle errors
-        socket.addEventListener('error', function (event) {
-            appendMessage('WebSocket error: ' + event);
-        });
-
-        // Form submission to send a message
-        document.getElementById('inputForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const messageInput = document.getElementById('messageInput');
-            const message = messageInput.value;
-            if (message) {
-                socket.send(message);
-                appendMessage('You: ' + message);
-                messageInput.value = '';
+            if (!userId) {
+                errorDiv.textContent = "User ID cannot be empty.";
+                return;
             }
-        });
+            errorDiv.textContent = "";
 
-        // Function to append messages to the messages div
+            const authToken = "StreamTextSecretToken";
+            const wsUrl = `ws://localhost:7000/stream-text?userId=${encodeURIComponent(userId)}&authToken=${encodeURIComponent(authToken)}`;
+
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = function () {
+                console.log("WebSocket connection established.");
+                appendMessage("WS CONNECTED");
+                sessionStorage.setItem('isAuthenticated', 'true');
+            };
+
+            ws.onmessage = function (event) {
+                console.log("Message received:", event.data);
+                appendMessage(event.data);
+            };
+
+            ws.onerror = function (event) {
+                console.error("WebSocket error:", event);
+                appendMessage("WS ERROR: " + event);
+            };
+
+            ws.onclose = function (event) {
+                console.log("WebSocket connection closed.");
+                appendMessage("WS CLOSED");
+            };
+        }
+
+        function sendWebSocketMessage() {
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value.trim();
+            const errorDiv = document.getElementById("error");
+
+            if (!message) {
+                errorDiv.textContent = "Message cannot be empty.";
+                return;
+            }
+            errorDiv.textContent = "";
+
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(message);
+                messageInput.value = '';
+            } else {
+                console.log("WebSocket connection is not open.");
+                appendMessage("WS CLOSED");
+            }
+        }
+
         function appendMessage(message) {
-            const messagesDiv = document.getElementById('messages');
+            const messagesDiv = document.getElementById("messages");
             const messageElement = document.createElement('div');
             messageElement.textContent = message;
             messagesDiv.appendChild(messageElement);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
+
+        
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>WebSocket Auth</h1>
+
+        <div id="messages"></div>
+
+        <div class="form-group">
+            <label for="userIdInput">User ID:</label>
+            <input type="text" id="userIdInput" placeholder="Enter your User ID">
+            <div id="error" class="error"></div>
+        </div>
+        <button class="btn-primary" onclick="authenticateAndConnect()">Connect To WebSocket Server</button>
+
+        <div id="inputForm">
+            <input type="text" id="messageInput" placeholder="Type your message...">
+            <button class="btn-primary" onclick="sendWebSocketMessage()">Send Message</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById("messageInput").addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendWebSocketMessage();
+            }
+        });
     </script>
 </body>
 </html>
