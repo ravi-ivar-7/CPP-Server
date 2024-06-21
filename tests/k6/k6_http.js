@@ -14,7 +14,7 @@ export let options = {
 };
 
 export function cppApiTest() {
-    let res = http.get('http://localhost:7000/sys-server-info?sysInfo=true');
+    let res = http.get('https://63bf-2402-3a80-1a31-f6e1-dc06-9902-b12f-8b16.ngrok-free.app/sys-server-info?sysInfo=true');
     check(res, {
         'is status 200': (r) => r.status === 200,
         'response time is less than 1000ms': (r) => r.timings.duration < 1000,

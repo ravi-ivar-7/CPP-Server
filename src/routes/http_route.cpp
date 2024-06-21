@@ -24,7 +24,9 @@ void Routes::httpRoute(std::shared_ptr<tcp::socket> socket, std::shared_ptr<http
     std::cout << "[CLIENT IP : " << clientIp << " ]" << std::endl;
     std::cout << "[REQUEST   : " << req->method_string() << req->target() << " ]" << std::endl;
 
-    if (req->method() == http::verb::get && req->target().starts_with("/sys-server-info"))
+    if (req->method() == http::verb::get && req->target().starts_with("/favicon.ico "))
+        sysServerInfo(std::move(*socket), std::move(*req));
+    else if (req->method() == http::verb::get && req->target().starts_with("/sys-server-info"))
         sysServerInfo(std::move(*socket), std::move(*req));
     else if (req->method() == http::verb::get && req->target().starts_with("/download-file"))
         downloadFile(std::move(*socket), std::move(*req));

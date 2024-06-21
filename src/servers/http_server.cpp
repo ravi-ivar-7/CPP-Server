@@ -108,7 +108,9 @@ void HttpServer::run()
 HttpAcceptor::HttpAcceptor(boost::asio::io_context &ioc, unsigned short port)
     : ioc_(ioc), acceptor_(ioc)
 {
-    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), port);
+    // boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), port);
+
+boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address_v4::any(), port);
 
     boost::asio::socket_base::reuse_address option(true); // Set the socket option to reuse the address
 

@@ -1,3 +1,20 @@
+# C++ Server with Boost.Asio
+This server is built in C++ using the powerful and low-level I/O Boost.Asio library and is designed to handle a wide range of functionalities, including authentication, file handling, requests, encryption-decryption, client-side rendering, databases, and WebSocket communication for streaming text.
+
+## Features
+
+- **Authentication**: Secure user authentication.
+- **File Handling**: Efficient file upload and download capabilities.
+- **Request Handling**: Robust request/response mechanism for client-server communication with get/post fetch capabilities.
+- **Encryption/Decryption**: Secure data transmission using modern encryption techniques(RSA-256 encryption/decryption).
+- **Client-Side Rendering**: Dynamic content rendering on the client side.
+- **Database Integration**: Seamless interaction with databases for data storage and retrieval.
+- **WebSocket Support**: Real-time text streaming using WebSocket technology.
+
+
+
+
+### Project Structure
 ```
 CPP-Server/
 ├── CMakeLists.txt
@@ -64,10 +81,6 @@ CPP-Server/
 |   |       ├── utils.cpp
 |   |       ├── utils.hpp
 │   |       └── readme.md
-|   ├── utils
-|   |       ├── .cpp
-|   |       ├── .hpp
-│   |       └── readme.md
 |
 ├── templates/
 │   |
@@ -76,9 +89,18 @@ CPP-Server/
 |
 ├── tests/
 │   |
-│   ├── locustfile.py
-|   ├── rest.http
-│   └── api.py
+│   ├──comparision
+|   |       ├── node-server
+|   |       ├── fastapi-server
+|   |
+│   ├──────k6
+|   |       ├── k6_http.js
+|   |       ├── k6_ws.js
+|   |
+│   ├────locust
+|   |       ├── locustfile.py
+|   |
+|   |────rest.http
 
 ```
 ## To compile, build, and run the server in WSL:
