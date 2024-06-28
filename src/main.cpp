@@ -6,7 +6,7 @@
 
 int main()
 {
-    unsigned short port = 7000;
+    unsigned short port = 8080;
 
     try
     {

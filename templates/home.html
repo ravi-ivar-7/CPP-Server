@@ -206,15 +206,18 @@
 
         function fetchGeneralInfo(target) {
             let generalInfo = '';
-            if (target === 'reports') {
+            if (target === 'home') {
+                generalInfo = `
+                    <p>This server is built in C++ using the powerful and low-level I/O Boost.Asio library. It is designed to handle a wide range of functionalities, ensuring robust performance and security across various operations.</p>
+                    <p> Rest details are in below README file.</p>
+                     `;
+            }
+            else if (target === 'reports') {
                 generalInfo = `
                     <p>Following are the various load test reports carried out during development.</p>
                     <a href='render-html?filePath=reports/k6_http_loadtest_18_06_24.html' target="_blank">
                         <button class="reportContent" style="padding: 10px 20px; background-color: #44bd32; color: white; border: none; border-radius: 5px; cursor: pointer;">Http Load Test-V1</button>
-                    </a>
-                    <a href='render-html?filePath=reports/k6_ws_loadtest_18_06_24.html' target="_blank">
-                        <button class="reportContent" style="padding: 10px 20px; background-color: #44bd32; color: white; border: none; border-radius: 5px; cursor: pointer;">WebSocket Load Test-V1</button>
-                    </a>`;
+                    </a>` ;
             }
             else if (target === 'stream') {
                 generalInfo = `

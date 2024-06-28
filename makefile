@@ -35,7 +35,7 @@ INC_DIRS := -I./src -I./src/auth -I./src/client -I./src/files -I./src/requests -
 LIB_DIRS = -L$(BOOST_LIB_DIRS) -L./bcrypt/build
 
 # Libraries to link against (including bcrypt)
-LIBS := -lboost_system -lboost_filesystem -lbcrypt -lssl -lcrypto -lsqlite3
+LIBS := -lboost_system -lboost_filesystem -lbcrypt -lssl -lcrypto -lsqlite3 -pthread
 
 
 # Build target
