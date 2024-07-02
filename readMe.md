@@ -1,5 +1,7 @@
 # C++ Server with Boost.Asio
-This server is built in C++ using the powerful and low-level I/O Boost.Asio library and is designed to handle a wide range of functionalities, including authentication, file handling, requests, encryption-decryption, client-side rendering, databases, and WebSocket communication for streaming text.
+A high-performance, low-level server using C++ and Boost.Asio library and is designed to handle a wide range of functionalities, including authentication, file handling, requests, encryption-decryption, client-side rendering, databases, and WebSocket communication for streaming text.
+
+## Live On : http://20.40.47.132:8080/home
 
 ## Features
 
@@ -113,7 +115,7 @@ Run server with compilled file $ ./server
 
 ### Using `CMake`
 ```
-Create a build directory (recommended for out-of-source builds)
+Create a build directory
 Run cmake to generate the build files
 Run make to build the server
 Run the server executable from the build directory
@@ -136,7 +138,7 @@ make
 ### Boost
 
 ```bash
-Download and install it from the [Boost website](https://www.boost.org/).
+Download and install it from the https://www.boost.org.
 OR
 sudo apt-get update
 sudo apt-get install -y libboost-all-dev
