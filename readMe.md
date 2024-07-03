@@ -138,7 +138,7 @@ make
 ### Boost
 
 ```bash
-Download and install it from the https://www.boost.org.
+Download and install it from https://www.boost.org.
 OR
 sudo apt-get update
 sudo apt-get install -y libboost-all-dev
