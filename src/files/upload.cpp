@@ -39,11 +39,11 @@ void uploadFile(tcp::socket &&socket, http::request<http::string_body> &&req)
         //     throw std::runtime_error("Missing Content-Disposition header");
         // }
 
-        std::string contentDisposition = cdheader->value().to_string();
+        std::string contentDisposition = std::string(cdheader->value());
         std::string fileName = getFileName(contentDisposition);
 
 
-        std::string contentType = req[http::field::content_type].to_string();
+        std::string contentType = std::string(req[http::field::content_type]);
         std::string boundary = "--" + contentType.substr(contentType.find("boundary=") + 9);
         std::string body = req.body();
 

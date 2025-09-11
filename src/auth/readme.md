@@ -1,20 +1,25 @@
-# Authentication
+# Authentication Module
 
-Uses bcrypt for password hashing and verification.
+Handle user authentication using secure password hashing with bcrypt. Keep user credentials safe and provide reliable authentication services.
 
-## Features
+## What It Does
 
-- Password hashing and verification using bcrypt.
+- Securely hashes passwords using the industry-standard bcrypt algorithm
+- Verifies user credentials during login attempts
+- Protects against common password attacks through salt and adaptive hashing
 
-## API Endpoints
+## How to Use It
+
+### Authentication Endpoint
 - **URL**: `/authenticate`
 - **Method**: `GET`
-- **Description**: Authenticate user based on json data sent.
+- **What it does**: Authenticates users based on JSON credentials sent
+- **Perfect for**: Login systems, API authentication, user verification
 
 ## Dependencies
 
-- [Boost](https://www.boost.org/)
-- [nlohmann::json](https://github.com/nlohmann/json)
-- [bcrypt](https://github.com/rg3/bcrypt)
+- [Boost Libraries](https://www.boost.org/) - For robust C++ functionality
+- [nlohmann::json](https://github.com/nlohmann/json) - For easy JSON handling
+- [bcrypt](https://github.com/rg3/bcrypt) - For secure password hashing
 
 

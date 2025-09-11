@@ -1,15 +1,25 @@
-# SQLite Database Interaction with C++
+# Database Module
 
-## Requirements
+Provides a simple and reliable way to work with SQLite databases in C++ applications. Handles all common database operations needed.
 
-- SQLite library (`libsqlite3-dev` on Debian-based systems)
+## What It Does
+
+- Connects to SQLite databases with ease
+- Creates tables automatically when they don't exist
+- Handles reading, writing, and deleting data safely
+- Perfect for storing user data, application settings, and logs
+
+## Available Functions
+
+- **openSqlite()** - Opens a connection to SQLite database
+- **createSqliteTable()** - Creates a new table if it doesn't already exist
+- **writeSqlite()** - Saves data to database tables
+- **readSqlite()** - Retrieves data from database
+- **deleteFromTable()** - Removes specific records based on conditions
+
+## Dependencies
+
+- SQLite library (`libsqlite3-dev` on Ubuntu/Debian systems)
 - SQLite C/C++ headers (`sqlite3.h`)
 
-
-### Functions
-
-- **openSqlite**: Opens an SQLite database.
-- **createSqliteTable**: Creates an SQLite table if it does not exist.
-- **writeSqlite**: Writes data into an SQLite table.
-- **readSqlite**: Reads data from an SQLite table.
-- **deleteFromTable**: Deletes data from an SQLite table based on a condition.
+Makes database operations straightforward for building great features!

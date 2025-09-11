@@ -3,220 +3,482 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Stream Text</title>
-    <!-- <link rel="stylesheet" href="../assets/css/stream_text.css"> -->
-     <style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Streaming - C++ HTTP Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #7c3aed;
+            --accent-color: #059669;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border-color: #e5e7eb;
+            --shadow-light: rgba(37, 99, 235, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --gradient-accent: linear-gradient(135deg, var(--accent-color), #10b981);
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-    font-family: Arial, sans-serif;
-    background-color: #121212;
-    color: #e0e0e0;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    transition: background-color 0.5s ease-in-out;
-}
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
 
-.container {
-    background: #1e1e1e;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    padding: 20px;
-    width: 400px;
-    transition: all 0.3s ease-in-out;
-}
+        .container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 20px var(--shadow-medium);
+            transition: all 0.3s ease;
+        }
 
-h1 {
-    text-align: center;
-    color: #ffffff;
-    margin-bottom: 20px;
-}
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
-#messages {
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 10px;
-    height: 300px;
-    overflow-y: scroll;
-    margin-bottom: 10px;
-    background: #2e2e2e;
-    color: #d4d4d4;
-}
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
 
-#inputForm {
-    display: flex;
-    margin-top: 10px;
-}
+        .header .icon {
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
 
-#inputForm input[type="text"], #inputForm button {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #333;
-    border-radius: 8px;
-    margin-right: 5px;
-    transition: all 0.3s ease-in-out;
-}
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
 
-#inputForm input[type="text"] {
-    flex: 1;
-    background: #2e2e2e;
-    color: #d4d4d4;
-}
+        .messages-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
 
-#inputForm button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
+        .message {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
 
-#inputForm button:hover {
-    background-color: #0056b3;
-}
+        .message:last-child {
+            border-bottom: none;
+        }
 
-.form-group {
-    margin-bottom: 10px;
-}
+        .message.system {
+            color: var(--success-color);
+            font-weight: 500;
+        }
 
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    color: #ffffff;
-}
+        .message.error {
+            color: var(--error-color);
+            font-weight: 500;
+        }
 
-.form-group input[type="text"] {
-    width: calc(100% - 20px);
-    display: block;
-    margin: 0 auto;
-    background: #2e2e2e;
-    color: #d4d4d4;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #333;
-    border-radius: 8px;
-}
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
 
-.error {
-    color: #ff6b6b;
-    margin-top: 5px;
-}
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
 
-.btn-primary {
-    background-color: #1e88e5;
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
 
-.btn-primary:hover {
-    background-color: #005cb2;
-}
-     </style>
+        .form-group input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--shadow-light);
+        }
+
+        .error {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow-light);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--shadow-light);
+        }
+
+        .input-group .btn {
+            width: auto;
+            margin: 0;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .status-indicator.connected {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-indicator.disconnected {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .input-group .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>WebSocket </h1>
+        <div class="header">
+            <h1>
+                <i class="fas fa-stream icon"></i>
+                Real-Time Streaming
+            </h1>
+            <p>Connect to WebSocket server for real-time communication</p>
+        </div>
 
-        <div id="messages"></div>
+        <div id="status" class="status-indicator disconnected" style="display: none;">
+            <div class="status-dot"></div>
+            <span id="statusText">Disconnected</span>
+        </div>
+
+        <div id="messages" class="messages-container"></div>
 
         <div class="form-group">
-            <label for="userIdInput">User ID:</label>
-            <input type="text" id="userIdInput" placeholder="Enter your User ID">
-            <div id="error" class="error"></div>
+            <label for="userIdInput">
+                <i class="fas fa-user"></i>
+                User ID
+            </label>
+            <input type="text" id="userIdInput" placeholder="Enter your unique User ID">
+            <div id="error" class="error" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorText"></span>
+            </div>
         </div>
-        <button class="btn-primary" onclick="authenticateAndConnect()">Connect To WebSocket Server</button>
+        
+        <button class="btn btn-primary" id="connectBtn" onclick="authenticateAndConnect()">
+            <i class="fas fa-plug"></i>
+            Connect To WebSocket Server
+        </button>
 
-        <div id="inputForm">
-            <input type="text" id="messageInput" placeholder="Type your message...">
-            <button class="btn-primary" onclick="sendWebSocketMessage()">Send Message</button>
+        <div class="input-group">
+            <input type="text" id="messageInput" placeholder="Type your message..." disabled>
+            <button class="btn btn-primary" id="sendBtn" onclick="sendWebSocketMessage()" disabled>
+                <i class="fas fa-paper-plane"></i>
+                Send
+            </button>
         </div>
     </div>
 
     <script>
         let ws;
-let userId;
+        let userId;
 
-function authenticateAndConnect() {
-    userId = document.getElementById("userIdInput").value.trim();
-    const errorDiv = document.getElementById("error");
+        function authenticateAndConnect() {
+            userId = document.getElementById("userIdInput").value.trim();
+            const errorDiv = document.getElementById("error");
+            const errorText = document.getElementById("errorText");
+            const connectBtn = document.getElementById("connectBtn");
+            const statusDiv = document.getElementById("status");
+            const statusText = document.getElementById("statusText");
 
-    if (!userId) {
-        errorDiv.textContent = "User ID cannot be empty.";
-        return;
-    }
-    errorDiv.textContent = "";
+            if (!userId) {
+                showError("User ID cannot be empty.");
+                return;
+            }
+            hideError();
 
-    const authToken = "StreamTextSecretToken";
-    const wsUrl = `ws://localhost:7000/stream-text?userId=${encodeURIComponent(userId)}&authToken=${encodeURIComponent(authToken)}`;
+            // Update UI for connecting state
+            connectBtn.disabled = true;
+            connectBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
 
-    ws = new WebSocket(wsUrl);
+            const authToken = "StreamTextSecretToken";
+            const wsUrl = `ws://localhost:8080/stream-text?userId=${encodeURIComponent(userId)}&authToken=${encodeURIComponent(authToken)}`;
 
-    ws.onopen = function () {
-        console.log("WebSocket connection established.");
-        appendMessage("WS CONNECTED");
-        sessionStorage.setItem('isAuthenticated', 'true');
-    };
+            ws = new WebSocket(wsUrl);
 
-    ws.onmessage = function (event) {
-        console.log("Message received:", event.data);
-        appendMessage(event.data);
-    };
+            ws.onopen = function () {
+                console.log("WebSocket connection established.");
+                appendMessage("Connected to WebSocket server", "system");
+                sessionStorage.setItem('isAuthenticated', 'true');
+                
+                // Update UI for connected state
+                statusDiv.style.display = 'flex';
+                statusDiv.className = 'status-indicator connected';
+                statusText.textContent = 'Connected';
+                connectBtn.innerHTML = '<i class="fas fa-times"></i> Disconnect';
+                connectBtn.onclick = disconnect;
+                connectBtn.disabled = false;
+                
+                // Enable message input
+                document.getElementById("messageInput").disabled = false;
+                document.getElementById("sendBtn").disabled = false;
+                document.getElementById("userIdInput").disabled = true;
+            };
 
-    ws.onerror = function (event) {
-        console.error("WebSocket error:", event);
-        appendMessage("WS ERROR: " + event);
-    };
+            ws.onmessage = function (event) {
+                console.log("Message received:", event.data);
+                appendMessage(event.data);
+            };
 
-    ws.onclose = function (event) {
-        console.log("WebSocket connection closed.");
-        appendMessage("WS CLOSED");
-    };
-}
+            ws.onerror = function (event) {
+                console.error("WebSocket error:", event);
+                appendMessage("Connection error occurred", "error");
+                resetConnectionUI();
+            };
 
-function sendWebSocketMessage() {
-    const messageInput = document.getElementById("messageInput");
-    const message = messageInput.value.trim();
-    const errorDiv = document.getElementById("error");
+            ws.onclose = function (event) {
+                console.log("WebSocket connection closed.");
+                appendMessage("Connection closed", "system");
+                resetConnectionUI();
+            };
+        }
 
-    if (!message) {
-        errorDiv.textContent = "Message cannot be empty.";
-        return;
-    }
-    errorDiv.textContent = "";
+        function disconnect() {
+            if (ws) {
+                ws.close();
+            }
+            resetConnectionUI();
+        }
 
-    if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(message);
-        messageInput.value = '';
-    } else {
-        console.log("WebSocket connection is not open.");
-        appendMessage("WS CLOSED");
-    }
-}
+        function resetConnectionUI() {
+            const connectBtn = document.getElementById("connectBtn");
+            const statusDiv = document.getElementById("status");
+            const statusText = document.getElementById("statusText");
+            
+            statusDiv.style.display = 'flex';
+            statusDiv.className = 'status-indicator disconnected';
+            statusText.textContent = 'Disconnected';
+            connectBtn.innerHTML = '<i class="fas fa-plug"></i> Connect To WebSocket Server';
+            connectBtn.onclick = authenticateAndConnect;
+            connectBtn.disabled = false;
+            
+            // Disable message input
+            document.getElementById("messageInput").disabled = true;
+            document.getElementById("sendBtn").disabled = true;
+            document.getElementById("userIdInput").disabled = false;
+        }
 
-function appendMessage(message) {
-    const messagesDiv = document.getElementById("messages");
-    const messageElement = document.createElement('div');
-    messageElement.textContent = message;
-    messagesDiv.appendChild(messageElement);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
+        function sendWebSocketMessage() {
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value.trim();
 
-document.getElementById("messageInput").addEventListener("keyup", function (event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        sendWebSocketMessage();
-    }
-});
+            if (!message) {
+                showError("Message cannot be empty.");
+                return;
+            }
+            hideError();
+
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(message);
+                messageInput.value = '';
+                messageInput.focus();
+            } else {
+                appendMessage("Connection is not open", "error");
+                resetConnectionUI();
+            }
+        }
+
+        function appendMessage(message, type = '') {
+            const messagesDiv = document.getElementById("messages");
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            messageElement.innerHTML = `<span style="color: var(--text-muted); font-size: 0.75rem;">[${timestamp}]</span> ${message}`;
+            
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById("error");
+            const errorText = document.getElementById("errorText");
+            errorText.textContent = message;
+            errorDiv.style.display = 'flex';
+        }
+
+        function hideError() {
+            const errorDiv = document.getElementById("error");
+            errorDiv.style.display = 'none';
+        }
+
+        // Event listeners
+        document.getElementById("messageInput").addEventListener("keyup", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendWebSocketMessage();
+            }
+        });
+
+        document.getElementById("userIdInput").addEventListener("keyup", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                authenticateAndConnect();
+            }
+        });
+
+        // Initialize UI
+        document.addEventListener('DOMContentLoaded', function() {
+            appendMessage("Welcome to Real-Time Streaming. Enter your User ID to connect.", "system");
+        });
     </script>
 
 </body>

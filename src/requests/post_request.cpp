@@ -28,7 +28,7 @@ void postRequest(tcp::socket &&socket, http::request<http::string_body> &&req)
         std::string postData = parsedBody.at("data").get<std::string>();
 
 
-        std::string target = req.target().to_string();
+        std::string target = std::string(req.target());
         size_t pos = target.find('?');
         std::string host;
         std::string endpoint;

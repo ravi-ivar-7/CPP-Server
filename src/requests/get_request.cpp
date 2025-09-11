@@ -19,7 +19,7 @@ void getRequest(tcp::socket &&socket, http::request<http::string_body> &&req)
 {
     try
     {
-        std::string target = req.target().to_string();
+        std::string target = std::string(req.target());
         size_t pos = target.find('?');
         std::string host;
         std::string endpoint;

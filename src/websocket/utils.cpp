@@ -112,7 +112,7 @@ bool WSUtils::authenticate(const beast::http::request<beast::http::string_body>&
 std::string WSUtils::getUserId(const beast::http::request<beast::http::string_body>& req) {
     auto idHeader = req.find("X-Client-ID");
     if (idHeader != req.end()) {
-        return idHeader->value().to_string();
+        return std::string(idHeader->value());
     }
     return "";
 }

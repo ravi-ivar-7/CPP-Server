@@ -1,26 +1,49 @@
-# Stage 1: Build Stage
-FROM alpine:latest
+# Multi-stage build for C++ HTTP Server
+FROM ubuntu:22.04 AS builder
 
-# Set working directory inside the container
-WORKDIR /cpp
-
-# Copy all files from the host to the container's working directory
-COPY . .
-
-# Update package index and install necessary dependencies
-RUN apk update && \
-    apk add --no-cache \
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
     libboost-all-dev \
     nlohmann-json3-dev \
     libssl-dev \
-    make \
-    g++
+    libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Compile the C++ server application using make
-RUN make
+WORKDIR /app
 
-# Expose port 8080 for the server to listen on
+COPY . .
+
+RUN cd bcrypt && mkdir -p build && cd build && cmake .. && make && cd ../..
+
+RUN make clean && make
+
+FROM ubuntu:22.04
+
+# Install runtime dependencies only
+RUN apt-get update && apt-get install -y \
+    libboost-system1.74.0 \
+    libboost-filesystem1.74.0 \
+    libssl3 \
+    libsqlite3-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -r -s /bin/false cppserver
+
+WORKDIR /app
+
+COPY --from=builder /app/server .
+COPY --from=builder /app/templates ./templates
+COPY --from=builder /app/config ./config
+COPY --from=builder /app/bcrypt/build/libbcrypt.a ./bcrypt/build/
+
+RUN chown -R cppserver:cppserver /app
+
+USER cppserver
+
 EXPOSE 8080
 
-# Set the command to run the server when the container starts
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
 CMD ["./server"]

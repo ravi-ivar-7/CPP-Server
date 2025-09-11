@@ -7,10 +7,13 @@
 #include "../files/download.hpp"
 #include "../files/upload.hpp"
 #include "../client/render_html.hpp"
+#include "../client/render_file.hpp"
 #include "../auth/authenticate.hpp"
 #include "../security/encryption_decryption.hpp"
 #include "../requests/get_request.hpp"
 #include "../requests/post_request.hpp"
+#include "../health/health_check.hpp"
+#include "../utils/logger.hpp"
 
 namespace beast = boost::beast;
 namespace websocket = beast::websocket;
@@ -21,10 +24,13 @@ using tcp = net::ip::tcp;
 void Routes::httpRoute(std::shared_ptr<tcp::socket> socket, std::shared_ptr<http::request<http::string_body>> req, std::shared_ptr<beast::flat_buffer> /*buffer*/ )
 {
     std::string clientIp = socket->remote_endpoint().address().to_string();
-    std::cout << "[CLIENT IP : " << clientIp << " ]" << std::endl;
-    std::cout << "[REQUEST   : " << req->method_string() << req->target() << " ]" << std::endl;
+    LOG_INFO("Client request: " + clientIp + " " + std::string(req->method_string()) + " " + std::string(req->target()));
 
-    if (req->method() == http::verb::get && req->target().starts_with("/home"))
+    if (req->method() == http::verb::get && req->target().starts_with("/health"))
+    {
+        HealthCheck::handleHealthCheck(socket, req, nullptr);
+    }
+    else if (req->method() == http::verb::get && (req->target().starts_with("/home") || req->target() == "/"))
     {
         req->target("render-html?filePath=templates/home.html");
         renderHtml(std::move(*socket), std::move(*req));
@@ -40,6 +46,8 @@ void Routes::httpRoute(std::shared_ptr<tcp::socket> socket, std::shared_ptr<http
         uploadFile(std::move(*socket), std::move(*req));
     else if (req->method() == http::verb::get && req->target().starts_with("/render-html"))
         renderHtml(std::move(*socket), std::move(*req));
+    else if (req->method() == http::verb::get && req->target().starts_with("/render-file"))
+        renderFile(std::move(*socket), std::move(*req));
     else if (req->method() == http::verb::get && req->target().starts_with("/authenticate"))
         authenticate(std::move(*socket), std::move(*req));
     else if (req->method() == http::verb::post && req->target().starts_with("/encrypt-data"))

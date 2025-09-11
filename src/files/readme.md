@@ -1,38 +1,38 @@
-# Downlaod - Upload File
+# File Management Module
 
-- Download the specified file from the server.
-- Upload file to server.
+Handles all file upload and download needs. Let users download resources or upload files with simple and secure operations.
 
-## Features
+## What It Does
 
-- Supports various MIME types
-- Reads files from the server's filesystem and sends them to the client
+- **File Downloads**: Serves files from server to users
+- **File Uploads**: Accepts and safely stores files uploaded by users
+- **MIME Type Support**: Automatically detects and handles various file types
+- **Smart File Handling**: Extracts filenames and manages file storage automatically
+- **Secure Storage**: Saves uploaded files to the `assets/downloads` directory
 
-- Handles HTTP POST requests with file uploads.
-- Extracts filenames from the `Content-Disposition` header.
-- Saves uploaded files to the `assets/downloads` directory.
+## How to Use It
 
-
-## API Endpoints
-- **Downlaod-URL**: `/download-file?fileName=downloadfile.txt`
+### Download Files
+- **URL**: `/download-file?fileName=downloadfile.txt`
 - **Method**: `GET`
-- **Description**: Download a server file, fileName is considered from root folder
+- **What it does**: Downloads any file from server's root directory
+- **Perfect for**: Sharing documents, images, or any downloadable content
 
-- **Upload-URL**: `/upload-file`
+### Upload Files
+- **URL**: `/upload-file`
 - **Method**: `POST`
-- **Description**: Upload a file to server
+- **What it does**: Accepts file uploads from users
+- **Perfect for**: User profile pictures, document submissions, file sharing
 
+## Key Functions
 
-## Code Overview
-- `getFileExtension()`
-- `downloadFile()`: Handle incoming HTTP request for downloading files.
+- **getFileExtension()** - Determines the file type for proper handling
+- **downloadFile()** - Processes download requests and serves files
+- **getFileName()** - Extracts filenames from upload headers
+- **uploadFile()** - Handles file upload requests securely
 
-- `getFileName()`
-- `uploadFile()` : Handle Post HTTP request for uploading files.
+## Dependencies
 
-<!-- 
-For file-system link against the Boost Filesystem library when compiling using g++
-g++ -o files files.cpp -I/usr/include -lboost_system -lboost_filesystem 
- -->
-### Dependencies
-- [Boost](https://www.boost.org/): Boost libraries for handling networking and other utilities.
+- [Boost Libraries](https://www.boost.org/) - For networking and file system operations
+
+Takes care of all complex file handling for application logic focus!

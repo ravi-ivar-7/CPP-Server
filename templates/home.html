@@ -3,8 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C++ Server</title>
+    <title>C++ HTTP Server - Modern & Powerful</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #7c3aed;
+            --accent-color: #059669;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border-color: #e5e7eb;
+            --shadow-light: rgba(37, 99, 235, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --gradient-accent: linear-gradient(135deg, var(--accent-color), #10b981);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -12,270 +32,820 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
-            background:  #1F2833;
-            color: #d2dae2;
-            height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
             overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            z-index: 1000;
+            box-shadow: 0 2px 10px var(--shadow-medium);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .logo i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow-light);
         }
 
         .sidebar {
             position: fixed;
-            top: 0;
+            top: 70px;
             left: 0;
-            height: 100%;
-            width: 0;
-            background-color: #2f3640;
-            padding-top: 60px;
-            transition: width 0.3s ease;
-            z-index: 1000;
-            overflow-x: hidden;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 15px 20px;
-            color: #d2dae2;
-            text-decoration: none;
-            font-size: 18px;
-            transition: background-color 0.3s, padding-left 0.3s;
-        }
-
-        .sidebar a:hover {
-            background-color: #718093;
-            padding-left: 30px;
-        }
-
-        .sidebar a.active {
-            background-color: #44bd32;
-            padding-left: 30px;
-        }
-
-        .content {
-            margin-left: 0;
-            padding: 80px 20px 20px;
-            transition: margin-left 0.3s ease;
-            flex: 1;
+            width: 280px;
+            height: calc(100vh - 70px);
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 0;
             overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 999;
+            box-shadow: 2px 0 10px var(--shadow-medium);
         }
 
-        .content-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #003135; 
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        .sidebar.hidden {
+            transform: translateX(-100%);
         }
 
-        .content h2 {
-            color: #44bd32;
-            margin-bottom: 20px;
+        .nav-section {
+            margin-bottom: 2rem;
         }
 
-        .content p {
-            color: #d2dae2;
-            font-size: 16px;
+        .nav-title {
+            padding: 0 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-left-color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-item i {
+            width: 20px;
+            margin-right: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        .content-header {
+            margin-bottom: 2rem;
+        }
+
+        .content-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px var(--shadow-medium);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 40px var(--shadow-medium);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-content {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow-light);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px var(--shadow-medium);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 16px var(--shadow-medium);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-accent);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
             line-height: 1.6;
         }
 
-        .content h2,
-        .content p {
-            animation: fadeIn 0.5s;
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+        .feature-content {
+            flex: 1;
         }
 
-        .top-nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: rgba(47, 54, 64, 0.9); 
-            color: white;
-            padding: 10px 20px;
+        .actions {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 999;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
         }
 
-        .toggle-btn {
-            font-size: 20px;
-            cursor: pointer;
-            color: white;
+        .readme-content {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .readme-content h4 {
+            color: var(--text-primary);
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .markdown-content {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3,
+        .markdown-content h4,
+        .markdown-content h5,
+        .markdown-content h6 {
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+
+        .markdown-content ul,
+        .markdown-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .markdown-content code {
+            background: var(--bg-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--primary-color);
+        }
+
+        .markdown-content pre {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+
+        .markdown-content blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                padding-top: 60px;
+            .header {
+                padding: 0 1rem;
             }
 
-            .content {
-                margin-left: 0;
-                padding-top: 80px;
+            .main-content {
+                padding: 1rem;
             }
 
-            .sidebar a {
-                text-align: center;
+            .content-title {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .feature-grid,
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .feature-card {
+                padding: 1.25rem;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions .btn {
+                width: 100%;
+                justify-content: center;
             }
         }
 
-        .button {
-            padding: 10px 20px;
-            background-color: #44bd32;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        @media (max-width: 480px) {
+            .feature-grid,
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .feature-card {
+                padding: 1rem;
+            }
+
+            .feature-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .feature-title {
+                font-size: 1rem;
+            }
+
+            .feature-description {
+                font-size: 0.8rem;
+            }
         }
 
-        .box {
-            background-color: rgba(47, 54, 64, 0.95);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="top-nav" style="display: flex; justify-content: space-between; align-items: center; background-color: #2f3640; color: white; padding: 10px 20px;">
-        <span id="closeBtn" class="toggle-btn" onclick="closeSidebar()" style="display: none; font-size: 20px; cursor: pointer; color: white; padding: 5px 10px; background-color: #e74c3c; border-radius: 5px;">×</span>
-        <span>C++ Server</span>
-        <span class="toggle-btn" onclick="toggleSidebar()" style="font-size: 20px; cursor: pointer; color: white; padding: 5px 10px; background-color: #44bd32; border-radius: 5px;">MENU</span>
-    </div>
-    
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-server"></i>
+            <span>C++ HTTP Server</span>
+        </div>
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
 
-    <div class="sidebar" id="sidebar">
-        <a href="#home" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/readMe.md" class="active">Home</a>
-        <a href="#about" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/readMe.md">About Project</a>
-        <a href="#reports" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/templates/reports/readme.md">Reports</a>
-        <a href="#authorization" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/src/auth/readme.md">Authorization</a>
-        <a href="#client" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/src/client/readme.md">Client</a>
-        <a href="#databases" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/src/databases/readme.md">Databases</a>
-        <a href="#files" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/src/files/readme.md">Files</a>
-        <a href="#requests" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/src/requests/readme.md">Requests</a>
-        <a href="#routes" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/src/routes/readme.md">Routes</a>
-        <a href="#security" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/src/security/readme.md">Security</a>
-        <a href="#stream" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/src/stream/readme.md">Stream</a>
-        <a href="#system" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/src/system/readme.md">System</a>
-        <a href="#websocket" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/src/websocket/readme.md">Web-Socket</a>
-        <a href="#tests" data-url="https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/tests/readme.md">Tests</a>
-    </div>
+    <nav class="sidebar" id="sidebar">
+        <div class="nav-section">
+            <div class="nav-title">Overview</div>
+            <a href="#home" class="nav-item active" data-module="home">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#health" class="nav-item" data-module="health">
+                <i class="fas fa-heartbeat"></i>
+                <span>Health Check</span>
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">Core Modules</div>
+            <a href="#auth" class="nav-item" data-module="auth">
+                <i class="fas fa-shield-alt"></i>
+                <span>Authentication</span>
+            </a>
+            <a href="#security" class="nav-item" data-module="security">
+                <i class="fas fa-lock"></i>
+                <span>Security & Encryption</span>
+            </a>
+            <a href="#databases" class="nav-item" data-module="databases">
+                <i class="fas fa-database"></i>
+                <span>Database</span>
+            </a>
+            <a href="#files" class="nav-item" data-module="files">
+                <i class="fas fa-file-alt"></i>
+                <span>File Management</span>
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">Communication</div>
+            <a href="#requests" class="nav-item" data-module="requests">
+                <i class="fas fa-exchange-alt"></i>
+                <span>HTTP Proxy</span>
+            </a>
+            <a href="#websocket" class="nav-item" data-module="websocket">
+                <i class="fas fa-plug"></i>
+                <span>WebSocket Utils</span>
+            </a>
+            <a href="#stream" class="nav-item" data-module="stream">
+                <i class="fas fa-stream"></i>
+                <span>Real-Time Streaming</span>
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">System</div>
+            <a href="#system" class="nav-item" data-module="system">
+                <i class="fas fa-cogs"></i>
+                <span>System Info</span>
+            </a>
+            <a href="#routes" class="nav-item" data-module="routes">
+                <i class="fas fa-route"></i>
+                <span>Routing</span>
+            </a>
+            <a href="#client" class="nav-item" data-module="client">
+                <i class="fas fa-desktop"></i>
+                <span>HTML Rendering</span>
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">About</div>
+            <a href="#author" class="nav-item" data-module="author">
+                <i class="fas fa-user-circle"></i>
+                <span>Author</span>
+            </a>
+        </div>
+    </nav>
 
-    <div class="content" id="content">
-        <div id="home" class="content-wrapper">
-            <h2>Welcome to C++ Server</h2>
-            <div class="box">
-                <h3>General</h3>
-                <p>Loading...</p>
-            </div>
-            <div class="box">
-                <h3>README Content</h3>
-                <p>Loading...</p>
+    <main class="main-content" id="mainContent">
+        
+        <div id="contentArea">
+            <div class="loading">
+                <div class="spinner"></div>
+                Loading content...
             </div>
         </div>
-    </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
-        async function fetchReadmeContent(url) {
+        // Module configuration with README file paths
+        const moduleConfig = {
+            home: {
+                title: 'C++ HTTP Server',
+                description: 'A modern, high-performance HTTP server built with C++ using Boost.Asio and Boost.Beast libraries.',
+                readmePath: '/README.md',
+                features: [
+                    { icon: 'fas fa-rocket', title: 'High Performance', description: 'Built with C++ for maximum speed and efficiency' },
+                    { icon: 'fas fa-shield-alt', title: 'Secure', description: 'RSA encryption, bcrypt hashing, and secure authentication' },
+                    { icon: 'fas fa-cogs', title: 'Modular', description: 'Clean, organized architecture with separate modules' },
+                    { icon: 'fas fa-plug', title: 'WebSocket Support', description: 'Real-time communication with WebSocket connections' }
+                ],
+                actions: [
+                    { text: 'View Health Status', url: '/health', icon: 'fas fa-heartbeat' },
+                    { text: 'System Information', url: '/sys-server-info?sysInfo=true', icon: 'fas fa-info-circle' }
+                ]
+            },
+            health: {
+                title: 'Health Check',
+                description: 'Monitor server health, uptime, and system metrics in real-time.',
+                actions: [
+                    { text: 'Check Server Health', url: '/health', icon: 'fas fa-heartbeat' }
+                ]
+            },
+            auth: {
+                title: 'Authentication Module',
+                description: 'Handle user authentication using secure password hashing with bcrypt.',
+                readmePath: '/src/auth/readme.md'
+            },
+            security: {
+                title: 'Security & Encryption Module',
+                description: 'Military-grade encryption and decryption services using RSA algorithms.',
+                readmePath: '/src/security/readme.md'
+            },
+            databases: {
+                title: 'Database Module',
+                description: 'Simple and reliable SQLite database operations for C++ applications.',
+                readmePath: '/src/databases/readme.md'
+            },
+            files: {
+                title: 'File Management Module',
+                description: 'Handle file upload and download operations with security and ease.',
+                readmePath: '/src/files/readme.md'
+            },
+            requests: {
+                title: 'HTTP Request Proxy Module',
+                description: 'Proxy HTTP requests to external APIs while keeping credentials secure.',
+                readmePath: '/src/requests/readme.md'
+            },
+            websocket: {
+                title: 'WebSocket Utilities Module',
+                description: 'Essential utilities for managing WebSocket connections in applications.',
+                readmePath: '/src/websocket/readme.md'
+            },
+            stream: {
+                title: 'Real-Time Streaming Module',
+                description: 'Real-time communication through WebSocket connections for chat and live updates.',
+                readmePath: '/src/stream/readme.md',
+                actions: [
+                    { text: 'Start Text Stream', url: 'render-html?filePath=templates/stream_text.html', icon: 'fas fa-comments' }
+                ]
+            },
+            system: {
+                title: 'System Information Module',
+                description: 'Complete visibility into server health and performance metrics.',
+                readmePath: '/src/system/readme.md',
+                actions: [
+                    { text: 'View System Info', url: '/sys-server-info?sysInfo=true', icon: 'fas fa-chart-line' }
+                ]
+            },
+            routes: {
+                title: 'Routing Module',
+                description: 'Traffic controller that directs requests to appropriate handlers.',
+                readmePath: '/src/routes/readme.md'
+            },
+            client: {
+                title: 'HTML Rendering Module',
+                description: 'Serve HTML files dynamically for web interfaces and content.',
+                readmePath: '/src/client/readme.md'
+            },
+            author: {
+                title: 'About the Author',
+                description: 'Learn about the developer behind this C++ HTTP Server project.',
+                readmePath: '/AUTHOR.md'
+            }
+        };
+
+        async function showContent(module) {
+            const contentArea = document.getElementById('contentArea');
+            const config = moduleConfig[module];
+            
+            if (!config) {
+                contentArea.innerHTML = '<div class="card"><p>Content not found for this module.</p></div>';
+                return;
+            }
+
+            // Update active navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-module="${module}"]`).classList.add('active');
+
+            // Show loading state
+            contentArea.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading ${config.title}...
+                </div>
+            `;
+
             try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch README');
+                let html = `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">${config.title}</div>
+                        </div>
+                        <div class="card-content">
+                            <p class="description">${config.description}</p>
+                `;
+
+                // If module has a README file, fetch and render it
+                if (config.readmePath) {
+                    try {
+                        const response = await fetch(`/render-file?filePath=${config.readmePath.substring(1)}`);
+                        if (response.ok) {
+                            const readmeContent = await response.text();
+                            // Convert markdown to HTML
+                            const htmlContent = marked.parse(readmeContent);
+                            html += `
+                                <div class="readme-content">
+                                    <div class="markdown-content">${htmlContent}</div>
+                                </div>
+                            `;
+                        } else {
+                            html += `<p><em>README file not available for this module.</em></p>`;
+                        }
+                    } catch (error) {
+                        html += `<p><em>Error loading README: ${error.message}</em></p>`;
+                    }
                 }
-                const markdown = await response.text();
-                return marked.parse(markdown);
+
+                // Add features if available
+                if (config.features) {
+                    html += `
+                        <div class="features-grid">
+                            ${config.features.map(feature => `
+                                <div class="feature-card">
+                                    <div class="feature-icon"><i class="${feature.icon}"></i></div>
+                                    <div class="feature-content">
+                                        <h4>${feature.title}</h4>
+                                        <p>${feature.description}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                // Add action buttons if available
+                if (config.actions) {
+                    html += `
+                        <div class="actions">
+                            ${config.actions.map(action => `
+                                <a href="${action.url}" target="_blank" class="btn btn-primary">
+                                    <i class="${action.icon}"></i>
+                                    ${action.text}
+                                </a>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                html += `
+                        </div>
+                    </div>
+                `;
+
+                contentArea.innerHTML = html;
             } catch (error) {
-                console.error('Error fetching README:', error);
-                return '<p>Failed to load README content. Check connection and refresh the page.</p> </br> Visit <a href="https://github.com/ravi-ivar-7/CPP-Server">Github repository</a>';
-            }
-        }
-
-        function fetchGeneralInfo(target) {
-            let generalInfo = '';
-            if (target === 'home') {
-                generalInfo = `
-                    <p>This server is built in C++ using the powerful and low-level I/O Boost.Asio library. It is designed to handle a wide range of functionalities, ensuring robust performance and security across various operations.</p>
-                    <p> Rest details are in below README file.</p>
-                     `;
-            }
-            else if (target === 'reports') {
-                generalInfo = `
-                    <p>Following are the various load test reports carried out during development.</p>
-                    <a href='render-html?filePath=reports/k6_http_loadtest_18_06_24.html' target="_blank">
-                        <button class="reportContent" style="padding: 10px 20px; background-color: #44bd32; color: white; border: none; border-radius: 5px; cursor: pointer;">Http Load Test-V1</button>
-                    </a>` ;
-            }
-            else if (target === 'stream') {
-                generalInfo = `
-                    <p>To test text streaming, open below link in two or more tabs with each having unique userId. Then communicate with all users.</p>
-                    <a href='render-html?filePath=templates/stream_text.html' target="_blank">
-                        <button class="streamContent" style="padding: 10px 20px; background-color: #44bd32; color: white; border: none; border-radius: 5px; cursor: pointer;">Strart Text Stream</button>
-                    </a>`;
-            }
-
-            return generalInfo;
-        }
-
-        async function showContent(target, url) {
-            const contentDiv = document.getElementById('content');
-            const readmeContent = await fetchReadmeContent(url);
-            const generalInfo = fetchGeneralInfo(target);
-
-            contentDiv.innerHTML = `
-                <div id="${target}" class="content-wrapper">
-                    <h2>${document.querySelector(`.sidebar a[href="#${target}"]`).innerText}</h2>
-                    <div class="box">
-                        <h3>GENERAL: </h3>
-                        ${generalInfo}
+                contentArea.innerHTML = `
+                    <div class="card">
+                        <div class="card-content">
+                            <p>Error loading content: ${error.message}</p>
+                        </div>
                     </div>
-                    <div class="box">
-                        <h3>README:</h3>
-                        ${readmeContent}
-                    </div>
-                </div>`;
-
-            const links = document.querySelectorAll('.sidebar a');
-            links.forEach(link => link.classList.remove('active'));
-            document.querySelector(`.sidebar a[href="#${target}"]`).classList.add('active');
-
-            toggleSidebar();
+                `;
+            }
         }
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
-            sidebar.style.width = (sidebar.style.width === '250px' || sidebar.style.width === '') ? '0' : '250px';
+            const mainContent = document.getElementById('mainContent');
+            
+            if (window.innerWidth <= 1024) {
+                sidebar.classList.toggle('show');
+            } else {
+                sidebar.classList.toggle('hidden');
+                mainContent.classList.toggle('expanded');
+            }
         }
 
-        function closeSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.style.width = '0';
-        }
-
+        // Event listeners
         document.addEventListener('DOMContentLoaded', () => {
-            const links = document.querySelectorAll('.sidebar a');
-            links.forEach(link => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    const target = event.target.getAttribute('href').substring(1);
-                    const url = event.target.getAttribute('data-url');
-                    showContent(target, url);
+            // Navigation click handlers
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const module = item.getAttribute('data-module');
+                    showContent(module);
+                    
+                    // Close sidebar on mobile after selection
+                    if (window.innerWidth <= 1024) {
+                        document.getElementById('sidebar').classList.remove('show');
+                    }
                 });
             });
-            showContent('home', 'https://raw.githubusercontent.com/ravi-ivar-7/CPP-Server/master/readMe.md');
+
+            // Show home content by default
+            showContent('home');
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                const sidebar = document.getElementById('sidebar');
+                const mainContent = document.getElementById('mainContent');
+                
+                if (window.innerWidth > 1024) {
+                    sidebar.classList.remove('show');
+                    if (sidebar.classList.contains('hidden')) {
+                        mainContent.classList.add('expanded');
+                    } else {
+                        mainContent.classList.remove('expanded');
+                    }
+                } else {
+                    sidebar.classList.remove('hidden');
+                    mainContent.classList.remove('expanded');
+                }
+            });
         });
     </script>
 </body>

@@ -1,0 +1,82 @@
+name: C++ HTTP Server CI/CD
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libboost-all-dev nlohmann-json3-dev libssl-dev libsqlite3-dev cmake curl
+    
+    - name: Build bcrypt library
+      run: |
+        cd bcrypt
+        mkdir -p build
+        cd build
+        cmake ..
+        make
+        cd ../..
+    
+    - name: Build server
+      run: |
+        make clean
+        make
+    
+    - name: Test server startup
+      run: |
+        timeout 10s ./server &
+        sleep 5
+        curl -f http://localhost:8080/health || exit 1
+        pkill -f "./server" || true
+    
+    - name: Run API tests
+      run: |
+        ./server &
+        SERVER_PID=$!
+        sleep 3
+        
+        # Test endpoints
+        curl -f http://localhost:8080/ || exit 1
+        curl -f http://localhost:8080/sys-server-info?sysInfo=true || exit 1
+        
+        kill $SERVER_PID || true
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build Docker image
+      run: docker build -t cpp-http-server .
+    
+    - name: Test Docker container
+      run: |
+        docker run -d -p 8080:8080 --name test-server cpp-http-server
+        sleep 10
+        curl -f http://localhost:8080/health || exit 1
+        docker stop test-server
+        docker rm test-server
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run security scan
+      uses: securecodewarrior/github-action-add-sarif@v1
+      with:
+        sarif-file: 'security-scan.sarif'
+      continue-on-error: true

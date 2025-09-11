@@ -1,31 +1,37 @@
-# System
-## System-Server-Information
+# System Information Module
 
-Provides system information such as CPU details, memory information, system uptime, and the number of CPU cores. It utilizes the Boost Asio and Beast libraries for networking and HTTP handling, and the nlohmann/json library for JSON handling.
+Gives complete visibility into server health and performance. Like having a dashboard that shows everything about the system - from CPU usage to memory stats and uptime information.
 
-## Features
+## What It Does
 
-- **CPU Information**: Retrieves and displays CPU information from `/proc/cpuinfo`.
-- **Memory Information**: Retrieves and displays memory information from `/proc/meminfo`.
-- **System Uptime**: Retrieves and displays system uptime from `/proc/uptime`.
-- **CPU Cores**: Retrieves and displays the number of CPU cores using `sysconf`.
+- **CPU Monitoring**: Shows detailed information about server's processor
+- **Memory Tracking**: Displays current memory usage and availability
+- **Uptime Statistics**: Tells how long server has been running
+- **Core Detection**: Identifies the number of CPU cores available
+- **System Logging**: Saves important system events to log files
+- **Real-Time Data**: Provides up-to-the-minute system information
 
-## API Endpoints
+## How to Use It
+
+### Get System Information
 - **URL**: `/sys-server-info?sysInfo=true`
 - **Method**: `GET`
-- **Description**: Retrieves the server status and optionally detailed system information.
+- **What it does**: Returns comprehensive system statistics in JSON format
+- **Perfect for**: Monitoring dashboards, health checks, performance analysis
 
-## Code Overview
-- `getCpuInfo():` Reads and returns CPU information from /proc/cpuinfo.
-- `getMemoryInfo():` Reads and returns memory information from /proc/meminfo.
-- `getUpTime():` Reads and returns system uptime from /proc/uptime.
-- `getCoresNum():` Retrieves and returns the number of CPU cores using sysconf.
+## Key Functions
 
-- `sysServerInfo():` Handles incoming HTTP requests and sends back system information in JSON format.
-
-- `saveLog():` Handles log data and save it to a file. 
+- **getCpuInfo()** - Reads detailed CPU information from system files
+- **getMemoryInfo()** - Retrieves current memory usage statistics
+- **getUpTime()** - Shows how long the system has been running
+- **getCoresNum()** - Counts available CPU cores for performance optimization
+- **sysServerInfo()** - Handles system info requests and formats responses
+- **saveLog()** - Records important events to log files for troubleshooting
 
 ## Dependencies
-- [Boost](https://www.boost.org/)
-- [nlohmann/json](https://github.com/nlohmann/json)
-- [Boost.Beast](https://www.boost.org/doc/libs/1_75_0/libs/beast/doc/html/index.html)
+
+- [Boost Libraries](https://www.boost.org/) - For networking and system operations
+- [nlohmann/json](https://github.com/nlohmann/json) - For JSON data formatting
+- [Boost.Beast](https://www.boost.org/doc/libs/1_75_0/libs/beast/doc/html/index.html) - For HTTP request handling
+
+Helps keep server running smoothly by providing all the insights needed!

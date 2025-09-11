@@ -35,7 +35,7 @@ void StreamText::onMessage(std::shared_ptr<websocket::stream<tcp::socket>> ws, c
 bool StreamText::authenticate(const beast::http::request<beast::http::string_body> &req)
 {
     try {
-        std::string target = req.target().to_string();
+        std::string target = std::string(req.target());
         size_t pos = target.find('?');
         if (pos != std::string::npos)
         {
@@ -57,7 +57,7 @@ bool StreamText::authenticate(const beast::http::request<beast::http::string_bod
 std::string StreamText::getUserId(const beast::http::request<beast::http::string_body> &req)
 {
     try {
-        std::string target = req.target().to_string();
+        std::string target = std::string(req.target());
         size_t pos = target.find('?');
 
         if (pos != std::string::npos)

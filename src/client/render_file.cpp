@@ -7,16 +7,16 @@
 #include "../files/utils.hpp"
 #include "../requests/utils.hpp"
 #include "../system/log.hpp"
-#include "render_html.hpp"
+#include "render_file.hpp"
 
 namespace beast = boost::beast;
 namespace http = beast::http;
 namespace asio = boost::asio;
 using tcp = asio::ip::tcp;
 
-void renderHtml(tcp::socket &&socket, http::request<http::string_body> &&req)
+void renderFile(tcp::socket &&socket, http::request<http::string_body> &&req)
 {
-    std::string htmlFilePath;
+    std::string filePath;
     std::string target = std::string(req.target());
     size_t pos = target.find('?');
     if (pos != std::string::npos)
@@ -26,7 +26,7 @@ void renderHtml(tcp::socket &&socket, http::request<http::string_body> &&req)
         queryParams = getQueryParams(queryString);
         auto it = queryParams.find("filePath");
         if (it != queryParams.end())
-            htmlFilePath = it->second;
+            filePath = it->second;
         else
         {
             throw std::runtime_error("NO FILE PATH PROVIDED");
@@ -35,10 +35,25 @@ void renderHtml(tcp::socket &&socket, http::request<http::string_body> &&req)
 
     try
     {
-        std::string htmlContent = readFile(htmlFilePath);
+        std::string fileContent = readFile(filePath);
+        
+        // Determine content type based on file extension
+        std::string contentType = "text/plain";
+        if (filePath.length() >= 3 && filePath.substr(filePath.length() - 3) == ".md")
+            contentType = "text/markdown";
+        else if (filePath.length() >= 5 && filePath.substr(filePath.length() - 5) == ".html")
+            contentType = "text/html";
+        else if (filePath.length() >= 4 && filePath.substr(filePath.length() - 4) == ".css")
+            contentType = "text/css";
+        else if (filePath.length() >= 3 && filePath.substr(filePath.length() - 3) == ".js")
+            contentType = "application/javascript";
+        else if (filePath.length() >= 5 && filePath.substr(filePath.length() - 5) == ".json")
+            contentType = "application/json";
+        
         http::response<http::string_body> res{http::status::ok, req.version()};
-        res.set(http::field::content_type, "text/html");
-        res.body() = htmlContent;
+        res.set(http::field::content_type, contentType);
+        res.set(http::field::access_control_allow_origin, "*");
+        res.body() = fileContent;
         res.prepare_payload();
         http::write(socket, res);
     }
@@ -48,7 +63,7 @@ void renderHtml(tcp::socket &&socket, http::request<http::string_body> &&req)
 
         http::response<http::string_body> res{http::status::internal_server_error, req.version()};
         res.set(http::field::content_type, "text/plain");
-        res.body() = "Error reading HTML file.";
+        res.body() = "Error reading file: " + std::string(e.what());
         res.prepare_payload();
         http::write(socket, res);
     }
